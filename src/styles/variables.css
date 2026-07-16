@@ -1,0 +1,202 @@
+@font-face {
+  font-family: 'Sofia Pro';
+  src: url('../assets/fonts/Sofia Pro UltraLight Az.otf') format('opentype');
+  font-weight: 100;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Sofia Pro';
+  src: url('../assets/fonts/Sofia Pro UltraLight Italic Az.otf') format('opentype');
+  font-weight: 100;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Sofia Pro';
+  src: url('../assets/fonts/Sofia Pro ExtraLight Az.otf') format('opentype');
+  font-weight: 200;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Sofia Pro';
+  src: url('../assets/fonts/Sofia Pro ExtraLight Italic Az.otf') format('opentype');
+  font-weight: 200;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Sofia Pro';
+  src: url('../assets/fonts/Sofia Pro Light Az.otf') format('opentype');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Sofia Pro';
+  src: url('../assets/fonts/Sofia Pro Light Italic Az.otf') format('opentype');
+  font-weight: 300;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Sofia Pro';
+  src: url('../assets/fonts/Sofia Pro Regular Az.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Sofia Pro';
+  src: url('../assets/fonts/Sofia Pro Regular Italic Az.otf') format('opentype');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Sofia Pro';
+  src: url('../assets/fonts/Sofia Pro Medium Az.otf') format('opentype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Sofia Pro';
+  src: url('../assets/fonts/Sofia Pro Medium Italic Az.otf') format('opentype');
+  font-weight: 500;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Sofia Pro';
+  src: url('../assets/fonts/Sofia Pro Semi Bold Az.otf') format('opentype');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Sofia Pro';
+  src: url('../assets/fonts/Sofia Pro Semi Bold Italic Az.otf') format('opentype');
+  font-weight: 600;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Sofia Pro';
+  src: url('../assets/fonts/Sofia Pro Bold Az.otf') format('opentype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Sofia Pro';
+  src: url('../assets/fonts/Sofia Pro Bold Italic Az.otf') format('opentype');
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Sofia Pro';
+  src: url('../assets/fonts/Sofia Pro Black Az.otf') format('opentype');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Sofia Pro';
+  src: url('../assets/fonts/Sofia Pro Black Italic Az.otf') format('opentype');
+  font-weight: 900;
+  font-style: italic;
+  font-display: swap;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+:root {
+  --teal: #0E4A4D;
+  --sage: #92AC93;
+  --ivory: #F9F5EC;
+  --sky: #A8CBD3;
+  --gold: #C7A874;
+  --ink: #22322F;
+  --line: #D8D2C4;
+  --white: #FFFFFF;
+
+  --teal-dark: #0A3638;
+  --sage-dark: #7A9A7C;
+  --ink-soft: #55625C;
+  --text-on-dark: #F9F5EC;
+
+  --font-heading: 'Sofia Pro', sans-serif;
+  --font-body: 'Inter', sans-serif;
+
+  --header-h: 84px;
+  --radius-s: 12px;
+  --radius-m: 20px;
+  --radius-l: 32px;
+  --radius-full: 999px;
+
+  --shadow-s: 0 4px 16px rgba(14, 74, 77, 0.08);
+  --shadow-m: 0 12px 32px rgba(14, 74, 77, 0.14);
+  --ease: cubic-bezier(.22,.61,.36,1);
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  background-color: var(--ivory);
+  color: var(--ink);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+img { max-width: 100%; display: block; }
+
+a { color: inherit; text-decoration: none; }
+
+ul { list-style: none; margin: 0; padding: 0; }
+
+h1, h2, h3, h4 {
+  font-family: var(--font-heading);
+  font-weight: 800;
+  color: var(--teal);
+  margin: 0;
+  line-height: 1.15;
+}
+
+h2 { font-size: clamp(2rem, 3.2vw, 2.75rem); }
+h3 { font-size: 1.25rem; font-weight: 700; }
+
+p { margin: 0; }
+
+.container {
+  width: 100%;
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 0 32px;
+}
+
+.section { padding: 120px 0; position: relative; }
+
+.eyebrow {
+  display: inline-block;
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: 0.85rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 14px;
+}
+
+.eyebrow-on-dark { color: var(--ivory); opacity: 0.85; }
+
+.ui-divider {
+  border: none;
+  border-top: 1px solid var(--line);
+  margin: 0;
+}
