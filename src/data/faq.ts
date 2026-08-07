@@ -1,4 +1,5 @@
 export const FAQ_ITEMS = [
+  // Pendência editorial: respostas médicas devem ser fornecidas e aprovadas pela profissional.
   { question: '1. Meu filho precisa de encaminhamento?', answer: '' },
   { question: '2. Quanto tempo dura a consulta?', answer: '' },
   { question: '3. Atende convênio?', answer: '' },

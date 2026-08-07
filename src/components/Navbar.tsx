@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import Button from './ui/Button';
 import logo from '../assets/icons/logo-horizontal-primary.svg';
 import { APPOINTMENT_WHATSAPP_TEXT } from '../data/contact';
@@ -7,6 +7,8 @@ import { MAIN_NAV_LINKS, NAV_LINKS } from '../data/navigation';
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
+  const toggleRef = useRef<HTMLButtonElement | null>(null);
+  const mobileNavRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
     const onScroll = () => setIsScrolled(window.scrollY > 12);
@@ -15,11 +17,79 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  useEffect(() => {
-    document.body.style.overflow = isMobileOpen ? 'hidden' : '';
-  }, [isMobileOpen]);
+  const closeMobile = useCallback((restoreFocus = true) => {
+    setIsMobileOpen(false);
+    if (restoreFocus) {
+      window.requestAnimationFrame(() => toggleRef.current?.focus());
+    }
+  }, []);
 
-  const closeMobile = () => setIsMobileOpen(false);
+  useEffect(() => {
+    const desktopQuery = window.matchMedia('(min-width: 861px)');
+    const closeOnDesktop = (event: MediaQueryListEvent) => {
+      if (event.matches) setIsMobileOpen(false);
+    };
+
+    desktopQuery.addEventListener('change', closeOnDesktop);
+    return () => desktopQuery.removeEventListener('change', closeOnDesktop);
+  }, []);
+
+  useEffect(() => {
+    if (!isMobileOpen) return;
+
+    const previousOverflow = document.body.style.overflow;
+    const inertTargets = Array.from(
+      document.querySelectorAll<HTMLElement>('main, footer, .whatsapp-float'),
+    ).map((element) => ({ element, wasInert: element.inert }));
+    const focusFrame = window.requestAnimationFrame(() => {
+      mobileNavRef.current?.querySelector<HTMLElement>('a[href], button')?.focus();
+    });
+
+    document.body.style.overflow = 'hidden';
+    inertTargets.forEach(({ element }) => {
+      element.inert = true;
+    });
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        closeMobile();
+        return;
+      }
+
+      if (event.key !== 'Tab') return;
+
+      const focusable = [
+        toggleRef.current,
+        ...Array.from(
+          mobileNavRef.current?.querySelectorAll<HTMLElement>('a[href], button:not([disabled])') ?? [],
+        ),
+      ].filter((element): element is HTMLElement => element !== null);
+
+      if (focusable.length === 0) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last?.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first?.focus();
+      }
+    };
+
+    document.addEventListener('keydown', onKeyDown);
+
+    return () => {
+      window.cancelAnimationFrame(focusFrame);
+      document.removeEventListener('keydown', onKeyDown);
+      document.body.style.overflow = previousOverflow;
+      inertTargets.forEach(({ element, wasInert }) => {
+        element.inert = wasInert;
+      });
+    };
+  }, [closeMobile, isMobileOpen]);
 
   return (
     <>
@@ -44,8 +114,9 @@ export default function Navbar() {
               Agendar consulta
             </Button>
             <button
+              ref={toggleRef}
               className="nav-toggle"
-              aria-label="Abrir menu"
+              aria-label={isMobileOpen ? 'Fechar menu' : 'Abrir menu'}
               aria-expanded={isMobileOpen}
               aria-controls="mobile-nav"
               onClick={() => setIsMobileOpen((v) => !v)}
@@ -58,11 +129,17 @@ export default function Navbar() {
         </div>
       </header>
 
-      <div className={`mobile-nav${isMobileOpen ? ' is-open' : ''}`} id="mobile-nav">
+      <nav
+        ref={mobileNavRef}
+        className={`mobile-nav${isMobileOpen ? ' is-open' : ''}`}
+        id="mobile-nav"
+        aria-label="Navegação móvel"
+        hidden={!isMobileOpen}
+      >
         <ul>
           {NAV_LINKS.map((link) => (
             <li key={link.href}>
-              <a href={link.href} onClick={closeMobile}>
+              <a href={link.href} onClick={() => closeMobile()}>
                 {link.label}
               </a>
             </li>
@@ -71,7 +148,7 @@ export default function Navbar() {
         <Button variant="primary" whatsappText={APPOINTMENT_WHATSAPP_TEXT}>
           Agendar consulta
         </Button>
-      </div>
+      </nav>
     </>
   );
 }

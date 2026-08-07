@@ -1,45 +1,64 @@
-import type { MouseEventHandler, ReactNode } from "react";
+import type { MouseEventHandler, ReactNode } from 'react';
 import { buildWhatsAppLink } from '../../utils/whatsapp';
 
-interface ButtonProps {
+interface CommonButtonProps {
   children: ReactNode;
   variant?: 'primary' | 'outline-light';
-  href?: string;
-  whatsappText?: string;
   className?: string;
-  onClick?: MouseEventHandler;
+}
+
+interface NativeButtonProps extends CommonButtonProps {
+  href?: never;
+  whatsappText?: never;
+  onClick?: MouseEventHandler<HTMLButtonElement>;
   type?: 'button' | 'submit';
 }
 
-export default function Button({
-  children,
-  variant = 'primary',
-  href,
-  whatsappText,
-  className = '',
-  onClick,
-  type = 'button',
-}: ButtonProps) {
-  const classes = `btn btn-${variant}${whatsappText ? ' btn-whatsapp' : ''} ${className}`.trim();
+interface LinkButtonProps extends CommonButtonProps {
+  href: string;
+  whatsappText?: never;
+  onClick?: MouseEventHandler<HTMLAnchorElement>;
+  type?: never;
+}
 
-  if (whatsappText) {
+interface WhatsAppButtonProps extends CommonButtonProps {
+  href?: never;
+  whatsappText: string;
+  onClick?: never;
+  type?: never;
+}
+
+type ButtonProps = NativeButtonProps | LinkButtonProps | WhatsAppButtonProps;
+
+export default function Button(props: ButtonProps) {
+  const { children, variant = 'primary', className = '' } = props;
+  const isWhatsApp = 'whatsappText' in props && typeof props.whatsappText === 'string';
+  const classes = `btn btn-${variant}${isWhatsApp ? ' btn-whatsapp' : ''} ${className}`.trim();
+
+  if (isWhatsApp) {
     return (
-      <a href={buildWhatsAppLink(whatsappText)} target="_blank" rel="noopener noreferrer" className={classes}>
+      <a
+        href={buildWhatsAppLink(props.whatsappText)}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={classes}
+      >
         {children}
+        <span className="visually-hidden"> (abre em nova aba)</span>
       </a>
     );
   }
 
-  if (href) {
+  if ('href' in props && typeof props.href === 'string') {
     return (
-      <a href={href} className={classes} onClick={onClick}>
+      <a href={props.href} className={classes} onClick={props.onClick}>
         {children}
       </a>
     );
   }
 
   return (
-    <button type={type} className={classes} onClick={onClick}>
+    <button type={props.type ?? 'button'} className={classes} onClick={props.onClick}>
       {children}
     </button>
   );

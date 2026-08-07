@@ -8,6 +8,10 @@ export const CONTACT = {
     label: 'dra.mayra_martins@gmail.com',
   },
   hours: 'Segunda a Sábado de 8h às 18h',
+  address: {
+    status: 'pending',
+    label: 'A definir — atualize com o endereço do consultório',
+  },
 } as const;
 
 export const APPOINTMENT_WHATSAPP_TEXT =

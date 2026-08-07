@@ -2,31 +2,48 @@ import { useEffect, useRef } from 'react';
 import Button from '../components/ui/Button';
 import Container from '../components/ui/Container';
 import PhotoSlot from '../components/ui/PhotoSlot';
+import { useMediaQuery, useReducedMotion } from '../hooks/useMediaQuery';
 import { useReveal } from '../hooks/useReveal';
 
 export default function Hero() {
-  const copy = useReveal<HTMLDivElement>();
-  const visual = useReveal<HTMLDivElement>();
   const parallaxRef = useRef<HTMLDivElement | null>(null);
+  const [copyRef, copyRevealClass] = useReveal<HTMLDivElement>();
+  const [visualRef, visualRevealClass] = useReveal<HTMLDivElement>(parallaxRef);
+  const isDesktop = useMediaQuery('(min-width: 861px)');
+  const reducedMotion = useReducedMotion();
 
   useEffect(() => {
-    if (!window.matchMedia('(min-width: 861px)').matches) return;
+    const element = parallaxRef.current;
+    if (!element) return;
+
+    if (!isDesktop || reducedMotion) {
+      element.style.transform = '';
+      return;
+    }
+
+    let animationFrame: number | null = null;
 
     const onScroll = () => {
-      const el = parallaxRef.current;
-      if (!el) return;
-      const offset = Math.min(window.scrollY * 0.08, 40);
-      el.style.transform = `translateY(${offset}px)`;
+      if (animationFrame !== null) return;
+      animationFrame = window.requestAnimationFrame(() => {
+        const offset = Math.min(window.scrollY * 0.08, 40);
+        element.style.transform = `translateY(${offset}px)`;
+        animationFrame = null;
+      });
     };
 
     window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
-  }, []);
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      if (animationFrame !== null) window.cancelAnimationFrame(animationFrame);
+      element.style.transform = '';
+    };
+  }, [isDesktop, reducedMotion]);
 
   return (
     <section className="section hero" id="inicio">
       <Container className="hero-grid">
-        <div ref={copy.ref} className={`hero-copy ${copy.className}`}>
+        <div ref={copyRef} className={`hero-copy ${copyRevealClass}`}>
           <h1 className="hero-title">
             Cuidado especializado para o desenvolvimento neurológico do <span>seu filho</span>
           </h1>
@@ -42,13 +59,7 @@ export default function Hero() {
           </div>
         </div>
 
-        <div
-          ref={(node) => {
-            visual.ref.current = node;
-            parallaxRef.current = node;
-          }}
-          className={`hero-visual ${visual.className}`}
-        >
+        <div ref={visualRef} className={`hero-visual ${visualRevealClass}`}>
           <div className="hero-blob hero-blob-sage" aria-hidden="true"></div>
           <div className="hero-blob hero-blob-gold" aria-hidden="true"></div>
           <div className="hero-blob hero-blob-sky" aria-hidden="true"></div>
@@ -57,6 +68,10 @@ export default function Hero() {
             src="/images/hero-consulta.jpg"
             alt="Dra. Mayra Martins durante consulta com criança e mãe"
             label="hero-consulta.jpg"
+            width={1000}
+            height={850}
+            loading="eager"
+            fetchPriority="high"
           />
         </div>
       </Container>

@@ -1,13 +1,45 @@
 import { useEffect, useRef } from 'react';
+import { useMediaQuery, useReducedMotion } from './useMediaQuery';
 
 export function usePinnedCarousel(itemCount: number) {
   const stickyWrapRef = useRef<HTMLDivElement | null>(null);
   const itemRefs = useRef<Array<HTMLElement | null>>([]);
   const indicatorRefs = useRef<Array<HTMLSpanElement | null>>([]);
+  const reducedMotion = useReducedMotion();
+  const hasShortViewport = useMediaQuery('(max-height: 650px)');
+  const useStaticLayout = reducedMotion || hasShortViewport;
 
   useEffect(() => {
     const stickyWrap = stickyWrapRef.current;
     if (!stickyWrap) return;
+
+    let animationFrame: number | null = null;
+
+    const setItemAccessibility = (activeIndex: number | null) => {
+      itemRefs.current.forEach((item, index) => {
+        if (!item) return;
+        const isAccessible = activeIndex === null || index === activeIndex;
+        item.inert = !isAccessible;
+        item.setAttribute('aria-hidden', String(!isAccessible));
+      });
+    };
+
+    if (useStaticLayout) {
+      stickyWrap.style.height = 'auto';
+      itemRefs.current.forEach((item) => {
+        if (!item) return;
+        item.style.opacity = '';
+        item.style.transform = '';
+        item.style.zIndex = '';
+        item.style.pointerEvents = '';
+      });
+      indicatorRefs.current.forEach((indicator) => indicator?.classList.remove('is-active'));
+      setItemAccessibility(null);
+
+      return () => {
+        stickyWrap.style.height = '';
+      };
+    }
 
     const setStickyHeight = () => {
       stickyWrap.style.height = `${itemCount * 100}vh`;
@@ -25,6 +57,7 @@ export function usePinnedCarousel(itemCount: number) {
       const progress = Math.min(Math.max(-rect.top / total, 0), 1);
       const activeFloat = progress * (itemCount - 1);
       const activeIndex = Math.round(activeFloat);
+      setItemAccessibility(activeIndex);
 
       itemRefs.current.forEach((item, index) => {
         if (!item) return;
@@ -58,7 +91,10 @@ export function usePinnedCarousel(itemCount: number) {
 
     const onScrollOrResize = () => {
       if (!ticking) {
-        window.requestAnimationFrame(updateCarousel);
+        animationFrame = window.requestAnimationFrame(() => {
+          animationFrame = null;
+          updateCarousel();
+        });
         ticking = true;
       }
     };
@@ -74,8 +110,11 @@ export function usePinnedCarousel(itemCount: number) {
       window.removeEventListener('resize', setStickyHeight);
       window.removeEventListener('scroll', onScrollOrResize);
       window.removeEventListener('resize', onScrollOrResize);
+      if (animationFrame !== null) window.cancelAnimationFrame(animationFrame);
+      stickyWrap.style.height = '';
+      setItemAccessibility(null);
     };
-  }, [itemCount]);
+  }, [itemCount, useStaticLayout]);
 
   return { stickyWrapRef, itemRefs, indicatorRefs };
 }

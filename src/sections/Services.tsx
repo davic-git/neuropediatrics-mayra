@@ -1,10 +1,11 @@
 import Badge from '../components/ui/Badge';
+import IconBadge from '../components/ui/IconBadge';
 import { SERVICE_STEPS } from '../data/services';
 import { useReveal } from '../hooks/useReveal';
 import { usePinnedCarousel } from '../hooks/usePinnedCarousel';
 
 export default function Services() {
-  const head = useReveal<HTMLDivElement>();
+  const [headRef, headRevealClass] = useReveal<HTMLDivElement>();
   const cardCount = SERVICE_STEPS.length;
   const { stickyWrapRef, itemRefs: cardRefs, indicatorRefs: dotRefs } =
     usePinnedCarousel(cardCount);
@@ -13,7 +14,7 @@ export default function Services() {
     <section className="how-section" id="como-agimos">
       <div className="how-sticky-wrap" ref={stickyWrapRef}>
         <div className="how-stage">
-          <div ref={head.ref} className={`container how-head ${head.className}`}>
+          <div ref={headRef} className={`container how-head ${headRevealClass}`}>
             <Badge onDark>Como atuamos</Badge>
             <h2>Como podemos ajudar?</h2>
             <p>
@@ -33,7 +34,7 @@ export default function Services() {
                 }}
               >
                 <span className="how-card-num">{step.num}</span>
-                <span className="how-card-icon" style={{ backgroundImage: `url(${step.icon})` }}></span>
+                <IconBadge icon={step.icon} className="how-card-icon" />
                 <h3>{step.title}</h3>
                 <p>{step.text}</p>
               </article>

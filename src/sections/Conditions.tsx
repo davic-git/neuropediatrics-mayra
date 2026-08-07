@@ -1,18 +1,19 @@
 import Badge from '../components/ui/Badge';
 import Container from '../components/ui/Container';
+import IconBadge from '../components/ui/IconBadge';
 import PhotoSlot from '../components/ui/PhotoSlot';
 import { CONDITIONS } from '../data/conditions';
 import { useReveal } from '../hooks/useReveal';
 
 export default function Conditions() {
-  const side = useReveal<HTMLDivElement>();
-  const cards = useReveal<HTMLDivElement>();
+  const [sideRef, sideRevealClass] = useReveal<HTMLDivElement>();
+  const [cardsRef, cardsRevealClass] = useReveal<HTMLDivElement>();
 
   return (
     <section className="section condicoes" id="condicoes">
       <div className="condicoes-pattern" aria-hidden="true"></div>
       <Container className="condicoes-grid">
-        <div ref={side.ref} className={`condicoes-side ${side.className}`}>
+        <div ref={sideRef} className={`condicoes-side ${sideRevealClass}`}>
           <Badge>Condições atendidas</Badge>
           <h2>Se sua criança tiver</h2>
           <p className="condicoes-intro">
@@ -29,14 +30,16 @@ export default function Conditions() {
               alt="Crianças acompanhadas pela Dra. Mayra Martins"
               label="foto-pacientes.jpg"
               caption="Foto de pacientes"
+              width={1000}
+              height={1150}
             />
           </div>
         </div>
 
-        <div ref={cards.ref} className={`conditions-cards ${cards.className}`}>
+        <div ref={cardsRef} className={`conditions-cards ${cardsRevealClass}`}>
           {CONDITIONS.map((condition) => (
             <div className="condition-card" key={condition.title}>
-              <span className="cond-icon" style={{ backgroundImage: `url(${condition.icon})` }}></span>
+              <IconBadge icon={condition.icon} className="cond-icon" />
               <h3>{condition.title}</h3>
               <p>{condition.text}</p>
             </div>

@@ -11,6 +11,7 @@ export default function FloatingWhatsapp() {
       aria-label="Falar no WhatsApp"
     >
       <MessageCircle size={26} />
+      <span className="visually-hidden">Abre em nova aba</span>
     </a>
   );
 }

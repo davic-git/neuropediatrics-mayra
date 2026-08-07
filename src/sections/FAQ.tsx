@@ -1,16 +1,16 @@
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import Badge from '../components/ui/Badge';
 import Button from '../components/ui/Button';
 import Container from '../components/ui/Container';
+import IconBadge from '../components/ui/IconBadge';
 import { FAQ_ITEMS } from '../data/faq';
 import { useReveal } from '../hooks/useReveal';
 import { ArrowRight } from "lucide-react";
 
 export default function FAQ() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
-  const side = useReveal<HTMLDivElement>();
-  const list = useReveal<HTMLDivElement>();
-  const answerRefs = useRef<Array<HTMLDivElement | null>>([]);
+  const [sideRef, sideRevealClass] = useReveal<HTMLDivElement>();
+  const [listRef, listRevealClass] = useReveal<HTMLDivElement>();
 
   const toggle = (index: number) => {
     setOpenIndex((prev) => (prev === index ? null : index));
@@ -19,7 +19,7 @@ export default function FAQ() {
   return (
     <section className="section faq" id="faq">
       <Container className="faq-grid">
-        <div ref={side.ref} className={`faq-side ${side.className}`}>
+        <div ref={sideRef} className={`faq-side ${sideRevealClass}`}>
           <Badge>FAQ&apos;s</Badge>
           <h2>Perguntas frequentes</h2>
           <Button variant="primary" whatsappText="Olá! Tenho uma dúvida sobre o atendimento.">
@@ -27,27 +27,31 @@ export default function FAQ() {
           </Button>
         </div>
 
-        <div ref={list.ref} className={`faq-list ${list.className}`}>
+        <div ref={listRef} className={`faq-list ${listRevealClass}`}>
           {FAQ_ITEMS.map((item, index) => {
             const isOpen = openIndex === index;
+            const buttonId = `faq-question-${index}`;
+            const panelId = `faq-answer-${index}`;
             return (
               <div className={`faq-item${isOpen ? ' is-open' : ''}`} key={item.question}>
-                <button className="faq-question" aria-expanded={isOpen} onClick={() => toggle(index)}>
+                <button
+                  id={buttonId}
+                  className="faq-question"
+                  aria-expanded={isOpen}
+                  aria-controls={panelId}
+                  onClick={() => toggle(index)}
+                >
                   <span>{item.question}</span>
-                  <span className="faq-chevron" style={{ backgroundImage: `url(${ArrowRight})` }}></span>
+                  <IconBadge icon={ArrowRight} className="faq-chevron" />
                 </button>
                 <div
+                  id={panelId}
                   className="faq-answer"
-                  style={{ maxHeight: isOpen ? `${answerRefs.current[index]?.scrollHeight ?? 0}px` : '0px' }}
+                  role="region"
+                  aria-labelledby={buttonId}
+                  hidden={!isOpen}
                 >
-                  <div
-                    className="faq-answer-inner"
-                    ref={(node) => {
-                      answerRefs.current[index] = node;
-                    }}
-                  >
-                    {item.answer}
-                  </div>
+                  <div className="faq-answer-inner">{item.answer}</div>
                 </div>
               </div>
             );

@@ -1,22 +1,25 @@
 import Badge from '../components/ui/Badge';
 import Container from '../components/ui/Container';
+import IconBadge from '../components/ui/IconBadge';
 import PhotoSlot from '../components/ui/PhotoSlot';
 import { ABOUT_CARDS } from '../data/about';
 import { useReveal } from '../hooks/useReveal';
 
 export default function About() {
-  const photo = useReveal<HTMLDivElement>();
-  const content = useReveal<HTMLDivElement>();
+  const [photoRef, photoRevealClass] = useReveal<HTMLDivElement>();
+  const [contentRef, contentRevealClass] = useReveal<HTMLDivElement>();
 
   return (
     <section className="section sobre" id="sobre">
       <Container className="sobre-grid">
-        <div ref={photo.ref} className={`sobre-photo-wrap ${photo.className}`}>
+        <div ref={photoRef} className={`sobre-photo-wrap ${photoRevealClass}`}>
           <PhotoSlot
             className="sobre-photo"
             src="/images/foto-mayra-benicio.jpg"
             alt="Dra. Mayra Martins com seu filho Benício"
             label="foto-mayra-benicio.jpg"
+            width={1000}
+            height={1200}
           />
           <div className="sobre-badge">
             <span className="sobre-badge-number">8+</span>
@@ -24,7 +27,7 @@ export default function About() {
           </div>
         </div>
 
-        <div ref={content.ref} className={`sobre-content ${content.className}`}>
+        <div ref={contentRef} className={`sobre-content ${contentRevealClass}`}>
           <Badge>Sobre a Dra. Mayra</Badge>
           <h2>Porque nos escolher?</h2>
 
@@ -39,7 +42,7 @@ export default function About() {
           <div className="sobre-cards">
             {ABOUT_CARDS.map((card) => (
               <div className="mini-card" key={card.title}>
-                <span className="mini-icon" style={{ backgroundImage: `url(${card.icon})` }}></span>
+                <IconBadge icon={card.icon} className="mini-icon" />
                 <h3>{card.title}</h3>
                 <p>{card.text}</p>
               </div>

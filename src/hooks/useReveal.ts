@@ -1,17 +1,23 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, type RefObject } from 'react';
+import { useReducedMotion } from './useMediaQuery';
 
-export function useReveal<T extends HTMLElement>() {
+export function useReveal<T extends HTMLElement>(linkedRef?: RefObject<T | null>) {
   const ref = useRef<T | null>(null);
   const [isVisible, setIsVisible] = useState(false);
+  const reducedMotion = useReducedMotion();
+  const supportsIntersectionObserver =
+    typeof window !== 'undefined' && 'IntersectionObserver' in window;
+  const revealRef = useCallback(
+    (node: T | null) => {
+      ref.current = node;
+      if (linkedRef) linkedRef.current = node;
+    },
+    [linkedRef],
+  );
 
   useEffect(() => {
     const el = ref.current;
-    if (!el) return;
-
-    if (!("IntersectionObserver" in window)) {
-      setIsVisible(true);
-      return;
-    }
+    if (!el || reducedMotion || !supportsIntersectionObserver) return;
 
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -29,10 +35,8 @@ export function useReveal<T extends HTMLElement>() {
     observer.observe(el);
 
     return () => observer.disconnect();
-  }, []);
+  }, [reducedMotion, supportsIntersectionObserver]);
 
-  return {
-    ref,
-    className: `reveal${isVisible ? " is-visible" : ""}`,
-  };
+  const className = `reveal${isVisible || reducedMotion || !supportsIntersectionObserver ? ' is-visible' : ''}`;
+  return [revealRef, className] as const;
 }
