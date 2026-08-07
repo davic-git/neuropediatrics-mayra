@@ -27,11 +27,9 @@ Strict-Transport-Security: max-age=31536000; includeSubDomains
 
 ## Inventário de assets
 
-- `src/assets/icons/`: identidade visual usada pelo site e variações oficiais mantidas como fonte de marca.
+- `src/assets/icons/`: identidade visual e ícones efetivamente usados pelo site.
 - `src/assets/fonts/`: família Sofia Pro original. O CSS carrega somente os pesos Black e Bold realmente usados; os demais arquivos foram preservados por serem materiais de identidade, não lixo confirmado.
 - A família Inter é empacotada em WOFF2 por `@fontsource/inter`, nos mesmos pesos e estilo usados anteriormente, sem requisição ao Google Fonts.
-- `src/assets/hero.png`: não está conectado e não corresponde de forma inequívoca a nenhuma fotografia pendente; foi preservado para evitar substituir conteúdo sem aprovação.
-- `public/icons.svg`: não está conectado, mas foi preservado por não haver confirmação de que não faça parte do pacote de marca.
 - `public/images/`: diretório esperado para as fotografias finais aprovadas.
 
 ## Operação

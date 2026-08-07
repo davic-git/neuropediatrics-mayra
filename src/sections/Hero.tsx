@@ -4,12 +4,13 @@ import Container from '../components/ui/Container';
 import PhotoSlot from '../components/ui/PhotoSlot';
 import { useMediaQuery, useReducedMotion } from '../hooks/useMediaQuery';
 import { useReveal } from '../hooks/useReveal';
+import heroPhoto from '../assets/images/hero/foto-mayra-neuropediatra.jpeg';
 
 export default function Hero() {
   const parallaxRef = useRef<HTMLDivElement | null>(null);
   const [copyRef, copyRevealClass] = useReveal<HTMLDivElement>();
   const [visualRef, visualRevealClass] = useReveal<HTMLDivElement>(parallaxRef);
-  const isDesktop = useMediaQuery('(min-width: 861px)');
+  const isDesktop = useMediaQuery('(min-width: 992px)');
   const reducedMotion = useReducedMotion();
 
   useEffect(() => {
@@ -65,11 +66,11 @@ export default function Hero() {
           <div className="hero-blob hero-blob-sky" aria-hidden="true"></div>
           <PhotoSlot
             className="hero-photo"
-            src="/images/hero-consulta.jpg"
-            alt="Dra. Mayra Martins durante consulta com criança e mãe"
-            label="hero-consulta.jpg"
-            width={1000}
-            height={850}
+            src={heroPhoto}
+            alt="Dra. Mayra Martins em seu consultório"
+            label="foto-mayra-neuropediatra.jpeg"
+            width={853}
+            height={1280}
             loading="eager"
             fetchPriority="high"
           />

@@ -5,10 +5,12 @@ import Container from '../components/ui/Container';
 import IconBadge from '../components/ui/IconBadge';
 import { FAQ_ITEMS } from '../data/faq';
 import { useReveal } from '../hooks/useReveal';
-import { ArrowRight } from "lucide-react";
+import { ChevronDown, ChevronUp } from 'lucide-react';
+import { useMediaQuery } from '../hooks/useMediaQuery';
 
 export default function FAQ() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
+  const usesStaticIcons = useMediaQuery('(max-width: 991px)');
   const [sideRef, sideRevealClass] = useReveal<HTMLDivElement>();
   const [listRef, listRevealClass] = useReveal<HTMLDivElement>();
 
@@ -42,7 +44,10 @@ export default function FAQ() {
                   onClick={() => toggle(index)}
                 >
                   <span>{item.question}</span>
-                  <IconBadge icon={ArrowRight} className="faq-chevron" />
+                  <IconBadge
+                    icon={usesStaticIcons && isOpen ? ChevronUp : ChevronDown}
+                    className="faq-chevron"
+                  />
                 </button>
                 <div
                   id={panelId}

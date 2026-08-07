@@ -7,7 +7,8 @@ export function usePinnedCarousel(itemCount: number) {
   const indicatorRefs = useRef<Array<HTMLSpanElement | null>>([]);
   const reducedMotion = useReducedMotion();
   const hasShortViewport = useMediaQuery('(max-height: 650px)');
-  const useStaticLayout = reducedMotion || hasShortViewport;
+  const hasStaticViewport = useMediaQuery('(max-width: 991px)');
+  const useStaticLayout = reducedMotion || hasShortViewport || hasStaticViewport;
 
   useEffect(() => {
     const stickyWrap = stickyWrapRef.current;

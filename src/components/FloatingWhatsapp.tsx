@@ -1,5 +1,5 @@
 import { buildWhatsAppLink } from '../utils/whatsapp';
-import { MessageCircle } from "lucide-react";
+import whatsappIcon from '../assets/icons/whatsapp.svg';
 
 export default function FloatingWhatsapp() {
   return (
@@ -10,7 +10,7 @@ export default function FloatingWhatsapp() {
       className="whatsapp-float btn-whatsapp"
       aria-label="Falar no WhatsApp"
     >
-      <MessageCircle size={26} />
+      <img src={whatsappIcon} alt="" aria-hidden="true" />
       <span className="visually-hidden">Abre em nova aba</span>
     </a>
   );

@@ -4,6 +4,7 @@ import IconBadge from '../components/ui/IconBadge';
 import PhotoSlot from '../components/ui/PhotoSlot';
 import { ABOUT_CARDS } from '../data/about';
 import { useReveal } from '../hooks/useReveal';
+import aboutPhoto from '../assets/images/about/foto-mayra-benicio.jpeg';
 
 export default function About() {
   const [photoRef, photoRevealClass] = useReveal<HTMLDivElement>();
@@ -15,11 +16,11 @@ export default function About() {
         <div ref={photoRef} className={`sobre-photo-wrap ${photoRevealClass}`}>
           <PhotoSlot
             className="sobre-photo"
-            src="/images/foto-mayra-benicio.jpg"
+            src={aboutPhoto}
             alt="Dra. Mayra Martins com seu filho Benício"
-            label="foto-mayra-benicio.jpg"
-            width={1000}
-            height={1200}
+            label="foto-mayra-benicio.jpeg"
+            width={960}
+            height={1280}
           />
           <div className="sobre-badge">
             <span className="sobre-badge-number">8+</span>

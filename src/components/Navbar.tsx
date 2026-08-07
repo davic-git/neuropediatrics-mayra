@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { Menu, X } from 'lucide-react';
 import Button from './ui/Button';
-import logo from '../assets/icons/logo-horizontal-primary.svg';
+import BrandLogo from './ui/BrandLogo';
 import { APPOINTMENT_WHATSAPP_TEXT } from '../data/contact';
 import { MAIN_NAV_LINKS, NAV_LINKS } from '../data/navigation';
 
@@ -96,7 +97,7 @@ export default function Navbar() {
       <header className={`site-header${isScrolled ? ' is-scrolled' : ''}`} id="site-header">
         <div className="header-inner">
           <a href="#topo" className="brand" aria-label="Mayra Martins Neuropediatria — início">
-            <img src={logo} alt="Mayra Martins Neuropediatria" className="brand-logo" />
+            <BrandLogo placement="header" />
           </a>
 
           <nav className="main-nav" aria-label="Navegação principal">
@@ -121,9 +122,7 @@ export default function Navbar() {
               aria-controls="mobile-nav"
               onClick={() => setIsMobileOpen((v) => !v)}
             >
-              <span></span>
-              <span></span>
-              <span></span>
+              {isMobileOpen ? <X aria-hidden="true" /> : <Menu aria-hidden="true" />}
             </button>
           </div>
         </div>
