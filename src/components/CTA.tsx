@@ -1,5 +1,5 @@
-import type { ReactNode } from "react";
-import Button from '../components/ui/Button';
+import type { ReactNode } from 'react';
+import Button from './ui/Button';
 
 interface CTAProps {
   text: ReactNode;
@@ -9,7 +9,13 @@ interface CTAProps {
   className?: string;
 }
 
-export default function CTA({ text, buttonLabel, whatsappText, variant = 'primary', className = '' }: CTAProps) {
+export default function CTA({
+  text,
+  buttonLabel,
+  whatsappText,
+  variant = 'primary',
+  className = '',
+}: CTAProps) {
   return (
     <div className={className}>
       <p>{text}</p>

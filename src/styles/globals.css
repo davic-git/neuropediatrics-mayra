@@ -598,19 +598,20 @@
   box-shadow: var(--shadow-s);
 }
 
-.blob-blue { background: var(--sky); border-radius: 50% 50% 50% 8% / 55% 55% 45% 45%; }
-.blob-yellow { background: var(--gold); border-radius: 50% 50% 8% 50% / 55% 55% 45% 45%; }
-.blob-red { background: #C96A5C; border-radius: 50% 50% 50% 8% / 45% 45% 55% 55%; }
+.blob-blue { background: var(--sky); border-radius: 50%; }
+.blob-yellow { background: var(--gold); border-radius: 50% 0% 50% 50% / 50%; }
+.blob-red { background: #C96A5C; border-radius: 50% 50% 0% 50% / 50%; }
+
 .blob-green {
   background: var(--sage);
-  border-radius: 50% 50% 8% 50% / 45% 45% 55% 55%;
+  border-radius: 50%;
   position: relative;
 }
 
 .conditions-cards {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 20px;
+  gap: 30px;
 }
 
 .condition-card {

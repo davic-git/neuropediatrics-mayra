@@ -1,25 +1,8 @@
 import { useEffect, useState } from 'react';
 import Button from './ui/Button';
 import logo from '../assets/icons/logo-horizontal-primary.svg';
-
-const MAIN_LINKS = [
-  { href: '#sobre', label: 'Sobre' },
-  { href: '#como-agimos', label: 'Como agimos' },
-  { href: '#condicoes', label: 'Condições' },
-  { href: '#para-familias', label: 'Para famílias' },
-  { href: '#contato', label: 'Contato' },
-];
-
-const MOBILE_LINKS = [
-  { href: '#sobre', label: 'Sobre' },
-  { href: '#como-agimos', label: 'Como agimos' },
-  { href: '#condicoes', label: 'Condições' },
-  { href: '#para-familias', label: 'Para famílias' },
-  { href: '#faq', label: 'Perguntas frequentes' },
-  { href: '#contato', label: 'Contato' },
-];
-
-const AGENDAR_TEXT = 'Olá! Gostaria de agendar uma consulta com a Dra. Mayra Martins.';
+import { APPOINTMENT_WHATSAPP_TEXT } from '../data/contact';
+import { MAIN_NAV_LINKS, NAV_LINKS } from '../data/navigation';
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -48,7 +31,7 @@ export default function Navbar() {
 
           <nav className="main-nav" aria-label="Navegação principal">
             <ul>
-              {MAIN_LINKS.map((link) => (
+              {MAIN_NAV_LINKS.map((link) => (
                 <li key={link.href}>
                   <a href={link.href}>{link.label}</a>
                 </li>
@@ -57,7 +40,7 @@ export default function Navbar() {
           </nav>
 
           <div className="header-actions">
-            <Button variant="primary" whatsappText={AGENDAR_TEXT} className="header-cta">
+            <Button variant="primary" whatsappText={APPOINTMENT_WHATSAPP_TEXT} className="header-cta">
               Agendar consulta
             </Button>
             <button
@@ -77,7 +60,7 @@ export default function Navbar() {
 
       <div className={`mobile-nav${isMobileOpen ? ' is-open' : ''}`} id="mobile-nav">
         <ul>
-          {MOBILE_LINKS.map((link) => (
+          {NAV_LINKS.map((link) => (
             <li key={link.href}>
               <a href={link.href} onClick={closeMobile}>
                 {link.label}
@@ -85,7 +68,7 @@ export default function Navbar() {
             </li>
           ))}
         </ul>
-        <Button variant="primary" whatsappText={AGENDAR_TEXT}>
+        <Button variant="primary" whatsappText={APPOINTMENT_WHATSAPP_TEXT}>
           Agendar consulta
         </Button>
       </div>

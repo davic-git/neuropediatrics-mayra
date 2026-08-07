@@ -1,35 +1,8 @@
 import Badge from '../components/ui/Badge';
+import Container from '../components/ui/Container';
 import PhotoSlot from '../components/ui/PhotoSlot';
+import { ABOUT_CARDS } from '../data/about';
 import { useReveal } from '../hooks/useReveal';
-import {
-  Puzzle,
-  Brain,
-  Sprout,
-  MessageCircle,
-}  from "lucide-react";
-
-const CARDS = [
-  {
-    icon: Puzzle,
-    title: 'Atendimento personalizado',
-    text: 'Cada plano de cuidado é pensado para as necessidades específicas do seu filho, não um modelo padrão.',
-  },
-  {
-    icon: Brain,
-    title: 'Avaliação do desenvolvimento',
-    text: 'Acompanhamento detalhado dos marcos motores, cognitivos e comportamentais em cada fase.',
-  },
-  {
-    icon: Sprout,
-    title: 'Acompanhamento contínuo',
-    text: 'O cuidado não termina na consulta: seguimos ao lado da família em cada etapa do desenvolvimento.',
-  },
-  {
-    icon: MessageCircle,
-    title: 'Escuta ativa das famílias',
-    text: 'Espaço para dúvidas, receios e conquistas — porque vocês também fazem parte do processo.',
-  },
-];
 
 export default function About() {
   const photo = useReveal<HTMLDivElement>();
@@ -37,7 +10,7 @@ export default function About() {
 
   return (
     <section className="section sobre" id="sobre">
-      <div className="container sobre-grid">
+      <Container className="sobre-grid">
         <div ref={photo.ref} className={`sobre-photo-wrap ${photo.className}`}>
           <PhotoSlot
             className="sobre-photo"
@@ -64,7 +37,7 @@ export default function About() {
           </blockquote>
 
           <div className="sobre-cards">
-            {CARDS.map((card) => (
+            {ABOUT_CARDS.map((card) => (
               <div className="mini-card" key={card.title}>
                 <span className="mini-icon" style={{ backgroundImage: `url(${card.icon})` }}></span>
                 <h3>{card.title}</h3>
@@ -73,7 +46,7 @@ export default function About() {
             ))}
           </div>
         </div>
-      </div>
+      </Container>
     </section>
   );
 }

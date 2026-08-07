@@ -1,47 +1,8 @@
 import Badge from '../components/ui/Badge';
+import Container from '../components/ui/Container';
 import PhotoSlot from '../components/ui/PhotoSlot';
+import { CONDITIONS } from '../data/conditions';
 import { useReveal } from '../hooks/useReveal';
-import {
-  Puzzle,
-  Brain,
-  Sprout,
-  MessageCircle,
-  Zap,
-  Moon
-}  from "lucide-react";
-
-const CONDITIONS = [
-  {
-    icon: Puzzle,
-    title: 'Transtorno do Espectro Autista',
-    text: 'Avaliação dos sinais do desenvolvimento social, comunicação e comportamento para orientação individualizada.',
-  },
-  {
-    icon: Brain,
-    title: 'TDAH',
-    text: 'Investigação de dificuldades de atenção, impulsividade e hiperatividade em diferentes fases da infância.',
-  },
-  {
-    icon: Sprout,
-    title: 'Atraso no Desenvolvimento',
-    text: 'Avaliação do desenvolvimento motor, cognitivo, da linguagem e das habilidades sociais.',
-  },
-  {
-    icon: MessageCircle,
-    title: 'Atraso na Fala e Linguagem',
-    text: 'Identificação das possíveis causas e definição do melhor acompanhamento para cada criança.',
-  },
-  {
-    icon: Zap,
-    title: 'Epilepsia',
-    text: 'Diagnóstico, acompanhamento e controle de crises epilépticas na infância.',
-  },
-  {
-    icon: Moon,
-    title: 'Distúrbios do Sono',
-    text: 'Investigação de alterações do sono que podem impactar o desenvolvimento infantil.',
-  },
-];
 
 export default function Conditions() {
   const side = useReveal<HTMLDivElement>();
@@ -50,7 +11,7 @@ export default function Conditions() {
   return (
     <section className="section condicoes" id="condicoes">
       <div className="condicoes-pattern" aria-hidden="true"></div>
-      <div className="container condicoes-grid">
+      <Container className="condicoes-grid">
         <div ref={side.ref} className={`condicoes-side ${side.className}`}>
           <Badge>Condições atendidas</Badge>
           <h2>Se sua criança tiver</h2>
@@ -81,7 +42,7 @@ export default function Conditions() {
             </div>
           ))}
         </div>
-      </div>
+      </Container>
     </section>
   );
 }

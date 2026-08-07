@@ -1,14 +1,7 @@
 import Container from './ui/Container';
 import logo from '../assets/icons/logo-horizontal-reversed.svg';
-
-const NAV_LINKS = [
-  { href: '#sobre', label: 'Sobre' },
-  { href: '#como-agimos', label: 'Como agimos' },
-  { href: '#condicoes', label: 'Condições' },
-  { href: '#para-familias', label: 'Para famílias' },
-  { href: '#faq', label: 'Perguntas frequentes' },
-  { href: '#contato', label: 'Contato' },
-];
+import { CONTACT } from '../data/contact';
+import { NAV_LINKS } from '../data/navigation';
 
 export default function Footer() {
   const year = new Date().getFullYear();
@@ -39,12 +32,12 @@ export default function Footer() {
           <h4>Contato</h4>
           <ul>
             <li>
-              <a href="tel:+5524999459027">(24) 99945-9027</a>
+              <a href={CONTACT.phone.href}>{CONTACT.phone.label}</a>
             </li>
             <li>
-              <a href="mailto:dra.mayra_martins@gmail.com">dra.mayra_martins@gmail.com</a>
+              <a href={CONTACT.email.href}>{CONTACT.email.label}</a>
             </li>
-            <li>Segunda a Sábado de 8h às 18h</li>
+            <li>{CONTACT.hours}</li>
           </ul>
         </div>
       </Container>

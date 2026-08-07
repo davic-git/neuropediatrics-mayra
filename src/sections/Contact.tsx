@@ -1,5 +1,7 @@
-import CTA from './CTA';
+import CTA from '../components/CTA';
+import Container from '../components/ui/Container';
 import PhotoSlot from '../components/ui/PhotoSlot';
+import { APPOINTMENT_WHATSAPP_TEXT, CONTACT } from '../data/contact';
 import { useReveal } from '../hooks/useReveal';
 import {
   Phone,
@@ -14,13 +16,13 @@ export default function Contact() {
 
   return (
     <section className="section contato" id="contato">
-      <div className="container">
+      <Container>
         <div ref={head.ref} className={`contato-head ${head.className}`}>
           <h2>Cada criança possui um caminho único de desenvolvimento.</h2>
           <CTA
             text="Se você tem dúvidas sobre o desenvolvimento do seu filho, estamos prontos para acolher sua família e oferecer uma avaliação individualizada."
             buttonLabel="Agendar consulta"
-            whatsappText="Olá! Gostaria de agendar uma consulta com a Dra. Mayra Martins."
+            whatsappText={APPOINTMENT_WHATSAPP_TEXT}
           />
         </div>
 
@@ -39,7 +41,7 @@ export default function Contact() {
                 <span className="contato-icon" style={{ backgroundImage: `url(${Phone})` }}></span>
                 <div>
                   <span className="contato-label">Telefone</span>
-                  <a href="tel:+5524999459027">(24) 99945-9027</a>
+                  <a href={CONTACT.phone.href}>{CONTACT.phone.label}</a>
                 </div>
               </li>
               <li>
@@ -55,14 +57,14 @@ export default function Contact() {
                 <span className="contato-icon" style={{ backgroundImage: `url(${Clock})` }}></span>
                 <div>
                   <span className="contato-label">Horário</span>
-                  <span className="contato-value">Segunda a Sábado de 8h às 18h</span>
+                  <span className="contato-value">{CONTACT.hours}</span>
                 </div>
               </li>
               <li>
                 <span className="contato-icon" style={{ backgroundImage: `url(${Mail})` }}></span>
                 <div>
                   <span className="contato-label">Email</span>
-                  <a href="mailto:dra.mayra_martins@gmail.com">dra.mayra_martins@gmail.com</a>
+                  <a href={CONTACT.email.href}>{CONTACT.email.label}</a>
                 </div>
               </li>
             </ul>
@@ -75,7 +77,7 @@ export default function Contact() {
             label="foto-consultorio-2.jpg"
           />
         </div>
-      </div>
+      </Container>
     </section>
   );
 }

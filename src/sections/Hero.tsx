@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import Button from '../components/ui/Button';
+import Container from '../components/ui/Container';
 import PhotoSlot from '../components/ui/PhotoSlot';
 import { useReveal } from '../hooks/useReveal';
 
@@ -24,7 +25,7 @@ export default function Hero() {
 
   return (
     <section className="section hero" id="inicio">
-      <div className="container hero-grid">
+      <Container className="hero-grid">
         <div ref={copy.ref} className={`hero-copy ${copy.className}`}>
           <h1 className="hero-title">
             Cuidado especializado para o desenvolvimento neurológico do <span>seu filho</span>
@@ -58,7 +59,7 @@ export default function Hero() {
             label="hero-consulta.jpg"
           />
         </div>
-      </div>
+      </Container>
     </section>
   );
 }

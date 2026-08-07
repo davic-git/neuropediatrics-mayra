@@ -1,16 +1,10 @@
 import { useRef, useState } from 'react';
 import Badge from '../components/ui/Badge';
 import Button from '../components/ui/Button';
+import Container from '../components/ui/Container';
+import { FAQ_ITEMS } from '../data/faq';
 import { useReveal } from '../hooks/useReveal';
 import { ArrowRight } from "lucide-react";
-
-const FAQ_ITEMS = [
-  { question: '1. Meu filho precisa de encaminhamento?', answer: '' },
-  { question: '2. Quanto tempo dura a consulta?', answer: '' },
-  { question: '3. Atende convênio?', answer: '' },
-  { question: '4. Quando devo procurar um neuropediatra?', answer: '' },
-  { question: '5. A consulta é somente para crianças com TEA?', answer: '' },
-];
 
 export default function FAQ() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
@@ -24,7 +18,7 @@ export default function FAQ() {
 
   return (
     <section className="section faq" id="faq">
-      <div className="container faq-grid">
+      <Container className="faq-grid">
         <div ref={side.ref} className={`faq-side ${side.className}`}>
           <Badge>FAQ&apos;s</Badge>
           <h2>Perguntas frequentes</h2>
@@ -59,7 +53,7 @@ export default function FAQ() {
             );
           })}
         </div>
-      </div>
+      </Container>
     </section>
   );
 }

@@ -1,4 +1,5 @@
-import CTA from './CTA';
+import CTA from '../components/CTA';
+import Container from '../components/ui/Container';
 import PhotoSlot from '../components/ui/PhotoSlot';
 import { useReveal } from '../hooks/useReveal';
 import { Puzzle } from "lucide-react";
@@ -10,7 +11,7 @@ export default function Families() {
 
   return (
     <section className="section familias" id="para-familias">
-      <div className="container">
+      <Container>
         <div ref={head.ref} className={`familias-head ${head.className}`}>
           <h2>Para famílias</h2>
           <p>Cada dúvida importa. Veja como facilitamos os primeiros passos da sua família nessa jornada.</p>
@@ -52,7 +53,7 @@ export default function Families() {
             variant="outline-light"
           />
         </div>
-      </div>
+      </Container>
     </section>
   );
 }
