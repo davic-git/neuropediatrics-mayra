@@ -2,6 +2,7 @@ import Container from './ui/Container';
 import BrandLogo from './ui/BrandLogo';
 import { CONTACT } from '../data/contact';
 import { NAV_LINKS } from '../data/navigation';
+import { ANALYTICS_EVENTS } from '../utils/analytics-events';
 import instagramIcon from '../assets/icons/instagram.svg';
 import threadsIcon from '../assets/icons/threads.svg';
 import facebookIcon from '../assets/icons/facebook.svg';
@@ -53,10 +54,20 @@ export default function Footer() {
           <h2>Contato</h2>
           <ul>
             <li>
-              <a href={CONTACT.phone.href}>{CONTACT.phone.label}</a>
+              <a
+                href={CONTACT.phone.href}
+                data-analytics-event={ANALYTICS_EVENTS.PHONE}
+              >
+                {CONTACT.phone.label}
+              </a>
             </li>
             <li>
-              <a href={CONTACT.email.href}>{CONTACT.email.label}</a>
+              <a
+                href={CONTACT.email.href}
+                data-analytics-event={ANALYTICS_EVENTS.EMAIL}
+              >
+                {CONTACT.email.label}
+              </a>
             </li>
             <li>{CONTACT.hours}</li>
           </ul>

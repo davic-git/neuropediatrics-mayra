@@ -4,6 +4,7 @@ import Button from './ui/Button';
 import BrandLogo from './ui/BrandLogo';
 import { APPOINTMENT_WHATSAPP_TEXT } from '../data/contact';
 import { MAIN_NAV_LINKS, NAV_LINKS } from '../data/navigation';
+import { ANALYTICS_EVENTS } from '../utils/analytics-events';
 
 export default function Navbar() {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
@@ -122,7 +123,12 @@ export default function Navbar() {
           </nav>
 
           <div className="header-actions">
-            <Button variant="primary" whatsappText={APPOINTMENT_WHATSAPP_TEXT} className="header-cta">
+            <Button
+              variant="primary"
+              whatsappText={APPOINTMENT_WHATSAPP_TEXT}
+              className="header-cta"
+              analyticsEvent={ANALYTICS_EVENTS.APPOINTMENT}
+            >
               Agendar consulta
             </Button>
             <button
@@ -155,7 +161,11 @@ export default function Navbar() {
             </li>
           ))}
         </ul>
-        <Button variant="primary" whatsappText={APPOINTMENT_WHATSAPP_TEXT}>
+        <Button
+          variant="primary"
+          whatsappText={APPOINTMENT_WHATSAPP_TEXT}
+          analyticsEvent={ANALYTICS_EVENTS.APPOINTMENT}
+        >
           Agendar consulta
         </Button>
       </nav>

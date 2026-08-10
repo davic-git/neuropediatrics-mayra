@@ -7,6 +7,7 @@ import '@fontsource/inter/latin-600.css';
 import App from './App';
 import { reactErrorHandlers } from './sentry';
 import './styles/globals.css';
+import { initializeAnalytics } from './utils/analytics';
 
 const rootElement = document.getElementById('root');
 
@@ -25,3 +26,5 @@ if (rootElement.hasChildNodes()) {
 } else {
   createRoot(rootElement, reactErrorHandlers).render(app);
 }
+
+initializeAnalytics();

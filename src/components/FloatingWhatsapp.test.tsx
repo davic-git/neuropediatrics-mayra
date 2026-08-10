@@ -12,5 +12,6 @@ describe('FloatingWhatsapp', () => {
     expect(link).toHaveAttribute('href', expect.stringMatching(/^https:\/\/wa\.me\/5524999459027\?text=/));
     expect(link).toHaveAttribute('target', '_blank');
     expect(link).toHaveAttribute('rel', 'noopener noreferrer');
+    expect(link).toHaveAttribute('data-analytics-event', 'click_whatsapp');
   });
 });

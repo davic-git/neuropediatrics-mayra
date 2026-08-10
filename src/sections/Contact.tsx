@@ -4,6 +4,7 @@ import IconBadge from '../components/ui/IconBadge';
 import PhotoSlot from '../components/ui/PhotoSlot';
 import { APPOINTMENT_WHATSAPP_TEXT, CONTACT } from '../data/contact';
 import { useReveal } from '../hooks/useReveal';
+import { ANALYTICS_EVENTS } from '../utils/analytics-events';
 import {
   Phone,
   MapPin,
@@ -24,6 +25,7 @@ export default function Contact() {
             text="Se você tem dúvidas sobre o desenvolvimento do seu filho, estamos prontos para acolher sua família e oferecer uma avaliação individualizada."
             buttonLabel="Agendar consulta"
             whatsappText={APPOINTMENT_WHATSAPP_TEXT}
+            analyticsEvent={ANALYTICS_EVENTS.APPOINTMENT}
           />
         </div>
 
@@ -44,7 +46,12 @@ export default function Contact() {
                 <IconBadge icon={Phone} className="contato-icon" />
                 <div>
                   <span className="contato-label">Telefone</span>
-                  <a href={CONTACT.phone.href}>{CONTACT.phone.label}</a>
+                  <a
+                    href={CONTACT.phone.href}
+                    data-analytics-event={ANALYTICS_EVENTS.PHONE}
+                  >
+                    {CONTACT.phone.label}
+                  </a>
                 </div>
               </li>
               <li>
@@ -67,7 +74,12 @@ export default function Contact() {
                 <IconBadge icon={Mail} className="contato-icon" />
                 <div>
                   <span className="contato-label">Email</span>
-                  <a href={CONTACT.email.href}>{CONTACT.email.label}</a>
+                  <a
+                    href={CONTACT.email.href}
+                    data-analytics-event={ANALYTICS_EVENTS.EMAIL}
+                  >
+                    {CONTACT.email.label}
+                  </a>
                 </div>
               </li>
             </ul>

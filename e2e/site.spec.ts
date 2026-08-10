@@ -122,6 +122,8 @@ test('serves the production preview with security headers', async ({ request }) 
   expect(contentSecurityPolicy).toContain("default-src 'self'");
   expect(contentSecurityPolicy).toContain('https://*.ingest.sentry.io');
   expect(contentSecurityPolicy).toContain('https://*.ingest.us.sentry.io');
+  expect(contentSecurityPolicy).toContain('https://www.googletagmanager.com');
+  expect(contentSecurityPolicy).toContain('https://www.google-analytics.com');
   expect(response.headers()['x-content-type-options']).toBe('nosniff');
   expect(response.headers()['referrer-policy']).toBe('strict-origin-when-cross-origin');
 });

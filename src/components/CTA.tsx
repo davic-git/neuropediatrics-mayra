@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import type { AnalyticsEventName } from '../utils/analytics-events';
 import Button from './ui/Button';
 
 interface CTAProps {
@@ -7,6 +8,7 @@ interface CTAProps {
   whatsappText: string;
   variant?: 'primary' | 'outline-light';
   className?: string;
+  analyticsEvent?: AnalyticsEventName;
 }
 
 export default function CTA({
@@ -15,11 +17,12 @@ export default function CTA({
   whatsappText,
   variant = 'primary',
   className = '',
+  analyticsEvent,
 }: CTAProps) {
   return (
     <div className={className}>
       <p>{text}</p>
-      <Button variant={variant} whatsappText={whatsappText}>
+      <Button variant={variant} whatsappText={whatsappText} analyticsEvent={analyticsEvent}>
         {buttonLabel}
       </Button>
     </div>
