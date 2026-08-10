@@ -29,6 +29,18 @@ function isCollectRequest(request, eventName) {
   return parameters.get('tid') === expectedMeasurementId && parameters.get('en') === eventName;
 }
 
+function summarizeCollectRequest(request) {
+  const url = new URL(request.url());
+  const parameters = requestParameters(request);
+
+  return {
+    host: url.host,
+    path: url.pathname,
+    measurementId: parameters.get('tid'),
+    eventName: parameters.get('en'),
+  };
+}
+
 async function dispatchTrackedClick(page, eventName) {
   const requestPromise = page.waitForRequest(
     (request) => isCollectRequest(request, eventName),
@@ -115,9 +127,9 @@ try {
       {
         runtimeState,
         requests: {
-          page_view: pageViewRequest.url(),
-          click_whatsapp: whatsappRequest.url(),
-          click_agendar_consulta: appointmentRequest.url(),
+          page_view: summarizeCollectRequest(pageViewRequest),
+          click_whatsapp: summarizeCollectRequest(whatsappRequest),
+          click_agendar_consulta: summarizeCollectRequest(appointmentRequest),
         },
         faviconStatus: faviconResponse.status(),
         relevantConsoleErrors,
