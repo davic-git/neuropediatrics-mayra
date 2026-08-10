@@ -14,13 +14,14 @@ describe('FAQ', () => {
     const panel = panelId ? document.getElementById(panelId) : null;
 
     expect(button).toHaveAttribute('aria-expanded', 'false');
-    expect(panel).toHaveAttribute('hidden');
+    expect(panel).toHaveAttribute('aria-hidden', 'true');
 
     await user.click(button);
     expect(button).toHaveAttribute('aria-expanded', 'true');
-    expect(panel).not.toHaveAttribute('hidden');
+    expect(panel).toHaveAttribute('aria-hidden', 'false');
 
     await user.click(button);
     expect(button).toHaveAttribute('aria-expanded', 'false');
+    expect(panel).toHaveAttribute('aria-hidden', 'true');
   });
 });

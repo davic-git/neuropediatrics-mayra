@@ -4,13 +4,12 @@ export const CONTACT = {
     label: '(24) 99945-9027',
   },
   email: {
-    href: 'mailto:dra.mayra_martins@gmail.com',
-    label: 'dra.mayra_martins@gmail.com',
+    href: 'mailto:dra.mayramartinsneuro@gmail.com',
+    label: 'dra.mayramartinsneuro@gmail.com',
   },
-  hours: 'Segunda a Sábado de 8h às 18h',
+  hours: 'Segunda a Sexta de 8h às 18h',
   address: {
-    status: 'pending',
-    label: 'A definir — atualize com o endereço do consultório',
+    label: 'Center Kids e Clínica Colo de Mãe',
   },
 } as const;
 

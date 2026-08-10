@@ -1,7 +1,6 @@
 import Badge from '../components/ui/Badge';
 import Container from '../components/ui/Container';
 import IconBadge from '../components/ui/IconBadge';
-import PhotoSlot from '../components/ui/PhotoSlot';
 import { CONDITIONS } from '../data/conditions';
 import { useReveal } from '../hooks/useReveal';
 
@@ -24,15 +23,6 @@ export default function Conditions() {
             <div className="blob blob-blue" aria-hidden="true"></div>
             <div className="blob blob-yellow" aria-hidden="true"></div>
             <div className="blob blob-red" aria-hidden="true"></div>
-            <PhotoSlot
-              className="blob blob-green"
-              src="/images/foto-pacientes.jpg"
-              alt="Crianças acompanhadas pela Dra. Mayra Martins"
-              label="foto-pacientes.jpg"
-              caption="Foto de pacientes"
-              width={1000}
-              height={1150}
-            />
           </div>
         </div>
 

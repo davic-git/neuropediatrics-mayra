@@ -5,12 +5,10 @@ import Container from '../components/ui/Container';
 import IconBadge from '../components/ui/IconBadge';
 import { FAQ_ITEMS } from '../data/faq';
 import { useReveal } from '../hooks/useReveal';
-import { ChevronDown, ChevronUp } from 'lucide-react';
-import { useMediaQuery } from '../hooks/useMediaQuery';
+import { ChevronDown } from 'lucide-react';
 
 export default function FAQ() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
-  const usesStaticIcons = useMediaQuery('(max-width: 991px)');
   const [sideRef, sideRevealClass] = useReveal<HTMLDivElement>();
   const [listRef, listRevealClass] = useReveal<HTMLDivElement>();
 
@@ -45,7 +43,7 @@ export default function FAQ() {
                 >
                   <span>{item.question}</span>
                   <IconBadge
-                    icon={usesStaticIcons && isOpen ? ChevronUp : ChevronDown}
+                    icon={ChevronDown}
                     className="faq-chevron"
                   />
                 </button>
@@ -54,7 +52,7 @@ export default function FAQ() {
                   className="faq-answer"
                   role="region"
                   aria-labelledby={buttonId}
-                  hidden={!isOpen}
+                  aria-hidden={!isOpen}
                 >
                   <div className="faq-answer-inner">{item.answer}</div>
                 </div>
