@@ -205,7 +205,7 @@
 
 .mobile-nav ul { display: flex; flex-direction: column; gap: 4px; }
 
-.mobile-nav a {
+.mobile-nav ul a {
   display: block;
   font-family: var(--font-heading);
   font-weight: 700;
@@ -213,6 +213,13 @@
   color: var(--teal);
   padding: 12px 0;
   border-bottom: 1px solid var(--line);
+}
+
+.mobile-nav ul a:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 3px;
+  border-radius: 4px;
+  box-shadow: none;
 }
 
 .mobile-nav .btn { align-self: flex-start; }
@@ -488,7 +495,7 @@
 .mini-card p { font-size: 0.92rem; color: var(--ink-soft); line-height: 1.55; }
 
 /* ==========================================================================
-   COMO AGIMOS — CARROSSEL DE 5 CARDS (scroll pinned)
+   COMO AGIMOS — CARROSSEL CONTROLADO
    ========================================================================== */
 
 .how-section {
@@ -496,42 +503,36 @@
   position: relative;
   overflow: hidden;
   overflow: clip;
+  padding: 120px 0;
 }
 
-.how-sticky-wrap { position: relative; }
-
 .how-stage {
-  position: sticky;
-  top: 0;
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  padding-top: var(--header-h);
+  position: relative;
 }
 
 .how-head {
   text-align: center;
   max-width: 640px;
-  margin: 0 auto 8px;
-  flex-shrink: 0;
+  margin: 0 auto 40px;
 }
 
 .how-head h2 { color: var(--teal); margin-bottom: 14px; }
 .how-head p { color: var(--teal-dark); font-size: 1.05rem; opacity: 0.85; }
 
+.how-carousel-viewport {
+  width: 100%;
+  overflow: hidden;
+}
+
 .how-cards {
-  position: relative;
-  width: min(560px, 86vw);
-  height: min(52vh, 430px);
-  margin-top: 36px;
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: calc((100% - 24px) / 2);
+  gap: 24px;
 }
 
 .how-card {
-  position: absolute;
-  inset: 0;
+  min-height: 380px;
   background: var(--ink);
   border-radius: var(--radius-l);
   padding: 44px 40px;
@@ -539,8 +540,6 @@
   flex-direction: column;
   align-items: flex-start;
   box-shadow: var(--shadow-m);
-  transform: translateX(140%) rotate(10deg);
-  opacity: 0;
 }
 
 .how-card-num {
@@ -574,24 +573,37 @@
   line-height: 1.6;
 }
 
-.how-progress {
+.how-controls {
   display: flex;
-  gap: 8px;
-  margin-top: 34px;
-  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  margin-top: 32px;
 }
 
-.how-progress span {
-  width: 10px; height: 10px;
+.how-control {
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
-  background: rgba(14,74,77,0.25);
-  transition: background-color 0.3s var(--ease), width 0.3s var(--ease);
+  border: 1.5px solid var(--teal);
+  background: var(--ivory);
+  color: var(--teal);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.25s var(--ease), background-color 0.25s var(--ease);
 }
 
-.how-progress span.is-active {
-  background: var(--teal);
-  width: 26px;
-  border-radius: var(--radius-full);
+.how-control:hover:not(:disabled) { transform: translateY(-2px); background: var(--white); }
+.how-control:disabled { cursor: not-allowed; opacity: 0.4; }
+.how-control svg { width: 22px; height: 22px; }
+
+.how-status {
+  min-width: 72px;
+  color: var(--teal-dark);
+  font-weight: 700;
+  text-align: center;
 }
 
 /* ==========================================================================
@@ -643,6 +655,11 @@
 .blob-blue { background: var(--sky); border-radius: 50%; }
 .blob-yellow { background: var(--gold); border-radius: 50% 0% 50% 50% / 50%; }
 .blob-red { background: #C96A5C; border-radius: 50% 50% 0% 50% / 50%; }
+
+.blob-green {
+  background: var(--sage);
+  border-radius: 50%;
+}
 
 .conditions-cards {
   display: grid;
@@ -1088,6 +1105,8 @@
     height: 40.52px;
   }
 
+  .how-cards { grid-auto-columns: 100%; }
+
 }
 
 @media (max-width: 991px) and (prefers-reduced-motion: no-preference) {
@@ -1111,9 +1130,8 @@
 @media (max-width: 860px) {
   :root { --header-h: 72px; }
   .header-inner { padding: 0 18px; gap: 12px; }
-  .main-nav { display: none; }
+  .main-nav, .header-cta { display: none; }
   .header-actions { gap: 8px; }
-  .header-cta { padding: 10px 14px; font-size: 0.78rem; }
   .nav-toggle { display: flex; }
 
   .section { padding: 84px 0; }
@@ -1126,8 +1144,6 @@
   .conditions-cards { grid-template-columns: 1fr; }
   .blobs-grid { grid-template-columns: 1fr 1fr; }
 
-  .how-stage { padding-top: calc(var(--header-h) + 20px); }
-  .how-cards { width: 92vw; height: 56vh; margin-top: 24px; }
   .how-card { padding: 32px 26px; }
   .how-card h3 { font-size: 1.25rem; }
 
@@ -1137,7 +1153,6 @@
 @media (max-width: 480px) {
   .header-inner { padding: 0 12px; gap: 8px; }
   .header-actions { gap: 6px; }
-  .header-cta { padding: 9px 11px; font-size: 0.72rem; }
   .nav-toggle { width: 40px; height: 40px; }
 
   .brand-logo-header {
@@ -1155,32 +1170,4 @@
   }
 
   .whatsapp-float img { width: 24px; height: 24px; }
-}
-
-@media (max-width: 991px), (max-height: 650px), (prefers-reduced-motion: reduce) {
-  .how-sticky-wrap { height: auto !important; }
-
-  .how-stage {
-    position: relative;
-    height: auto;
-    overflow: visible;
-    padding: calc(var(--header-h) + 40px) 0 60px;
-  }
-
-  .how-cards {
-    position: static;
-    width: min(560px, 86vw);
-    height: auto;
-    display: grid;
-    gap: 20px;
-  }
-
-  .how-card {
-    position: relative;
-    inset: auto;
-    opacity: 1;
-    transform: none !important;
-  }
-
-  .how-progress { display: none; }
 }

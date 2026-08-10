@@ -57,8 +57,7 @@ for (const viewport of viewports) {
     await page.goto('/');
     if (viewport.width <= 860) {
       const headerCta = page.locator('.site-header .header-cta');
-      await expect(headerCta).toBeVisible();
-      await expect(headerCta).toContainText('Agendar consulta');
+      await expect(headerCta).toBeHidden();
       await expect(page.locator('.brand-logo-header img')).toHaveAttribute('src', /logo-horizontal-mayra/);
     }
     await page.locator('footer').scrollIntoViewIfNeeded();
@@ -81,7 +80,14 @@ test('supports the mobile menu and FAQ by keyboard', async ({ page }) => {
   await page.keyboard.press('Enter');
   await expect(menuButton).toHaveAttribute('aria-expanded', 'true');
   await expect(menuButton).toHaveCSS('color', 'rgb(34, 50, 47)');
-  await expect(page.getByRole('navigation', { name: 'Navegação móvel' }).locator('a').first()).toBeFocused();
+  const mobileNav = page.getByRole('navigation', { name: 'Navegação móvel' });
+  const firstMobileLink = mobileNav.locator('ul a').first();
+  await expect(firstMobileLink).toBeFocused();
+  await expect(firstMobileLink).toHaveCSS('box-shadow', 'none');
+  const mobileCta = mobileNav.locator('.btn');
+  await expect(mobileCta).toBeVisible();
+  await expect(mobileCta).toContainText('Agendar consulta');
+  await expect(mobileCta).toHaveCSS('color', 'rgb(249, 245, 236)');
   await page.keyboard.press('Escape');
   await expect(menuButton).toBeFocused();
 
@@ -96,16 +102,16 @@ test('supports the mobile menu and FAQ by keyboard', async ({ page }) => {
   await expect(page.locator(`#${panelId}`)).toBeVisible();
 });
 
-test('keeps all service cards accessible with reduced motion', async ({ page }) => {
+test('navigates the service carousel with reduced motion', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.setViewportSize({ width: 390, height: 844 });
   await page.goto('/');
 
   const cards = page.locator('.how-card');
   await expect(cards).toHaveCount(5);
-  for (let index = 0; index < 5; index += 1) {
-    await expect(cards.nth(index)).toBeVisible();
-    await expect(cards.nth(index)).toHaveAttribute('aria-hidden', 'false');
-  }
+  await expect(page.locator('.how-status')).toHaveText('1 de 5');
+  await page.getByRole('button', { name: 'Próxima etapa' }).click();
+  await expect(page.locator('.how-status')).toHaveText('2 de 5');
 });
 
 test('keeps the original icon and family card colors', async ({ page }) => {
@@ -138,9 +144,50 @@ test('keeps the experience badge above the Mayra and Benício photo on mobile', 
 test('keeps only the decorative color blobs in the conditions section', async ({ page }) => {
   await page.goto('/');
 
-  await expect(page.locator('.blobs-grid .blob')).toHaveCount(3);
+  await expect(page.locator('.blobs-grid .blob')).toHaveCount(4);
+  await expect(page.locator('.blobs-grid .blob-green')).toHaveCount(1);
   await expect(page.locator('.blobs-grid .photo-slot')).toHaveCount(0);
   await expect(page.getByText(/foto de pacientes/i)).toHaveCount(0);
+});
+
+test('shows one service card on mobile and advances one card per click', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto('/');
+
+  const viewport = page.locator('.how-carousel-viewport');
+  await viewport.scrollIntoViewIfNeeded();
+  const cards = page.locator('.how-card');
+  const viewportBox = await viewport.boundingBox();
+  const firstBox = await cards.nth(0).boundingBox();
+  const secondBoxBefore = await cards.nth(1).boundingBox();
+  expect(viewportBox && firstBox && secondBoxBefore).toBeTruthy();
+  expect(firstBox!.width).toBeCloseTo(viewportBox!.width, 0);
+  expect(secondBoxBefore!.x).toBeGreaterThanOrEqual(viewportBox!.x + viewportBox!.width);
+
+  await page.getByRole('button', { name: 'Próxima etapa' }).click();
+  await expect(page.locator('.how-status')).toHaveText('2 de 5');
+  await expect.poll(async () => (await cards.nth(1).boundingBox())?.x).toBeCloseTo(viewportBox!.x, 0);
+});
+
+test('shows two service cards on desktop and advances one card per click', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto('/');
+
+  const viewport = page.locator('.how-carousel-viewport');
+  await viewport.scrollIntoViewIfNeeded();
+  const cards = page.locator('.how-card');
+  const viewportBox = await viewport.boundingBox();
+  const firstBox = await cards.nth(0).boundingBox();
+  const secondBox = await cards.nth(1).boundingBox();
+  const thirdBoxBefore = await cards.nth(2).boundingBox();
+  expect(viewportBox && firstBox && secondBox && thirdBoxBefore).toBeTruthy();
+  expect(firstBox!.width + secondBox!.width).toBeLessThan(viewportBox!.width);
+  expect(thirdBoxBefore!.x).toBeGreaterThanOrEqual(viewportBox!.x + viewportBox!.width);
+  await expect(page.locator('.how-status')).toHaveText('1–2 de 5');
+
+  await page.getByRole('button', { name: 'Próxima etapa' }).click();
+  await expect(page.locator('.how-status')).toHaveText('2–3 de 5');
+  await expect.poll(async () => (await cards.nth(1).boundingBox())?.x).toBeCloseTo(viewportBox!.x, 0);
 });
 
 test('opens external links safely and builds WhatsApp URLs correctly', async ({ page }) => {

@@ -23,6 +23,7 @@ export default function Conditions() {
             <div className="blob blob-blue" aria-hidden="true"></div>
             <div className="blob blob-yellow" aria-hidden="true"></div>
             <div className="blob blob-red" aria-hidden="true"></div>
+            <div className="blob blob-green" aria-hidden="true"></div>
           </div>
         </div>
 
