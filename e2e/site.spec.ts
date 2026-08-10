@@ -23,13 +23,14 @@ const viewports = [
   { name: 'phone-landscape-minimum', width: 667, height: 375 },
 ] as const;
 
-const expectedPendingImages = new Set([
+const expectedUnavailablePreviewResources = new Set([
   '/images/hero-consulta.jpg',
   '/images/foto-mayra-benicio.jpg',
   '/images/foto-pacientes.jpg',
   '/images/imagem-dna.png',
   '/images/foto-consultorio-1.jpg',
   '/images/foto-consultorio-2.jpg',
+  '/_vercel/speed-insights/script.js',
 ]);
 
 for (const viewport of viewports) {
@@ -48,7 +49,7 @@ for (const viewport of viewports) {
       if (
         url.origin === 'http://127.0.0.1:4175' &&
         response.status() >= 400 &&
-        !expectedPendingImages.has(url.pathname)
+        !expectedUnavailablePreviewResources.has(url.pathname)
       ) {
         unexpectedResponses.push(`${response.status()} ${url.pathname}`);
       }
@@ -116,8 +117,11 @@ test('opens external links safely and builds WhatsApp URLs correctly', async ({ 
 
 test('serves the production preview with security headers', async ({ request }) => {
   const response = await request.get('/');
+  const contentSecurityPolicy = response.headers()['content-security-policy'];
 
-  expect(response.headers()['content-security-policy']).toContain("default-src 'self'");
+  expect(contentSecurityPolicy).toContain("default-src 'self'");
+  expect(contentSecurityPolicy).toContain('https://*.ingest.sentry.io');
+  expect(contentSecurityPolicy).toContain('https://*.ingest.us.sentry.io');
   expect(response.headers()['x-content-type-options']).toBe('nosniff');
   expect(response.headers()['referrer-policy']).toBe('strict-origin-when-cross-origin');
 });

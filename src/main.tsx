@@ -5,6 +5,7 @@ import '@fontsource/inter/latin-400-italic.css';
 import '@fontsource/inter/latin-500.css';
 import '@fontsource/inter/latin-600.css';
 import App from './App';
+import { reactErrorHandlers } from './sentry';
 import './styles/globals.css';
 
 const rootElement = document.getElementById('root');
@@ -20,7 +21,7 @@ const app = (
 );
 
 if (rootElement.hasChildNodes()) {
-  hydrateRoot(rootElement, app);
+  hydrateRoot(rootElement, app, reactErrorHandlers);
 } else {
-  createRoot(rootElement).render(app);
+  createRoot(rootElement, reactErrorHandlers).render(app);
 }

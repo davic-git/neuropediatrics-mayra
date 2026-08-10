@@ -51,6 +51,8 @@ try {
   let html = htmlTemplate.replace('<div id="root"></div>', `<div id="root">${render()}</div>`);
 
   if (siteUrl) {
+    const pageUrl = `${siteUrl}/`;
+    const socialImageUrl = `${siteUrl}/og-image.jpg`;
     const structuredData = JSON.stringify({
       '@context': 'https://schema.org',
       '@type': 'WebSite',
@@ -60,8 +62,13 @@ try {
     }).replace(/</g, '\\u003c');
 
     const productionHead = [
-      `    <link rel="canonical" href="${siteUrl}/" />`,
-      `    <meta property="og:url" content="${siteUrl}/" />`,
+      `    <link rel="canonical" href="${pageUrl}" />`,
+      `    <meta property="og:url" content="${pageUrl}" />`,
+      `    <meta property="og:image" content="${socialImageUrl}" />`,
+      '    <meta property="og:image:width" content="1731" />',
+      '    <meta property="og:image:height" content="909" />',
+      '    <meta property="og:image:alt" content="Mayra Martins — Neuropediatria" />',
+      `    <meta name="twitter:image" content="${socialImageUrl}" />`,
       `    <script type="application/ld+json">${structuredData}</script>`,
     ].join('\n');
     html = html.replace('  </head>', `${productionHead}\n  </head>`);
@@ -78,7 +85,7 @@ try {
     ]);
   } else {
     console.warn(
-      'SEO: VITE_SITE_URL não foi definido; canonical, og:url, JSON-LD e sitemap foram omitidos para não inventar o domínio.',
+      'SEO: VITE_SITE_URL não foi definido; canonical, URLs sociais, JSON-LD e sitemap foram omitidos para não inventar o domínio.',
     );
   }
 
