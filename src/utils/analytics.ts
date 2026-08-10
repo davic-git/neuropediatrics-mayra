@@ -12,10 +12,13 @@ type GtagArguments =
     ]
   | ['event', AnalyticsEventName];
 
+type DataLayerCommand = GtagArguments | IArguments;
+type GtagFunction = (...args: GtagArguments) => void;
+
 declare global {
   interface Window {
-    dataLayer?: GtagArguments[];
-    gtag?: (...args: GtagArguments) => void;
+    dataLayer?: DataLayerCommand[];
+    gtag?: GtagFunction;
   }
 }
 
@@ -63,9 +66,11 @@ export function initializeAnalytics(options: AnalyticsOptions = {}): boolean {
 
   window.dataLayer = window.dataLayer || [];
 
-  function gtag(...args: GtagArguments): void {
-    window.dataLayer!.push(args);
-  }
+  const gtag: GtagFunction = function () {
+    // The official gtag.js command queue requires the function's array-like Arguments object.
+    // eslint-disable-next-line prefer-rest-params
+    window.dataLayer!.push(arguments);
+  };
 
   window.gtag = gtag;
 

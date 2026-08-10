@@ -1,10 +1,19 @@
 import { chromium } from '@playwright/test';
 
-const siteUrl = process.env.PRODUCTION_URL;
-const expectedMeasurementId = process.env.EXPECTED_GA_MEASUREMENT_ID;
+function readArgument(name) {
+  const index = process.argv.indexOf(name);
+  return index >= 0 ? process.argv[index + 1] : undefined;
+}
+
+const siteUrl = process.env.PRODUCTION_URL ?? readArgument('--url');
+const expectedMeasurementId =
+  process.env.EXPECTED_GA_MEASUREMENT_ID ?? readArgument('--measurement-id');
+const browserChannel = readArgument('--channel');
 
 if (!siteUrl || !expectedMeasurementId) {
-  throw new Error('Set PRODUCTION_URL and EXPECTED_GA_MEASUREMENT_ID before running this check.');
+  throw new Error(
+    'Set PRODUCTION_URL and EXPECTED_GA_MEASUREMENT_ID or pass --url and --measurement-id.',
+  );
 }
 
 function requestParameters(request) {
@@ -58,10 +67,24 @@ async function dispatchTrackedClick(page, eventName) {
   return requestPromise;
 }
 
-const browser = await chromium.launch();
+const browser = await chromium.launch(browserChannel ? { channel: browserChannel } : undefined);
 const page = await browser.newPage();
 const responseErrors = [];
 const consoleErrors = [];
+const googleRequests = [];
+
+page.on('request', (request) => {
+  const url = new URL(request.url());
+  if (url.hostname.includes('google-analytics.com') || url.hostname === 'www.googletagmanager.com') {
+    const parameters = requestParameters(request);
+    googleRequests.push({
+      host: url.host,
+      path: url.pathname,
+      measurementId: parameters.get('tid') ?? parameters.get('id'),
+      eventName: parameters.get('en'),
+    });
+  }
+});
 
 page.on('response', (response) => {
   if (response.status() >= 400) {
@@ -134,11 +157,36 @@ try {
         faviconStatus: faviconResponse.status(),
         relevantConsoleErrors,
         relevantResponseErrors,
+        googleRequests,
       },
       null,
       2,
     ),
   );
+} catch (error) {
+  const runtimeState = await page.evaluate(() => ({
+    dataLayerExists: Array.isArray(window.dataLayer),
+    dataLayerCommands: Array.isArray(window.dataLayer)
+      ? window.dataLayer.map((command) => [command[0], command[1]])
+      : [],
+    gtagType: typeof window.gtag,
+    scriptSrc: document.querySelector('script[src*="googletagmanager.com/gtag/js"]')?.src,
+  }));
+
+  console.error(
+    JSON.stringify(
+      {
+        error: error instanceof Error ? error.message : String(error),
+        runtimeState,
+        googleRequests,
+        consoleErrors,
+        responseErrors,
+      },
+      null,
+      2,
+    ),
+  );
+  process.exitCode = 1;
 } finally {
   await browser.close();
 }

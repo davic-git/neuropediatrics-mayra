@@ -32,9 +32,11 @@ describe('analytics', () => {
 
     expect(window.dataLayer).toBeInstanceOf(Array);
     expect(window.gtag).toBeTypeOf('function');
+    expect(Array.isArray(window.dataLayer?.[0])).toBe(false);
+    expect(Object.prototype.toString.call(window.dataLayer?.[0])).toBe('[object Arguments]');
     expect(window.dataLayer?.[0]?.[0]).toBe('js');
     expect(window.dataLayer?.[0]?.[1]).toBeInstanceOf(Date);
-    expect(window.dataLayer?.[1]).toEqual([
+    expect(Array.from(window.dataLayer?.[1] ?? [])).toEqual([
       'config',
       TEST_MEASUREMENT_ID,
       {
@@ -71,7 +73,7 @@ describe('analytics', () => {
       initializeAnalytics({ measurementId: TEST_MEASUREMENT_ID, isProduction: true });
       trackAnalyticsEvent(eventName);
 
-      expect(window.dataLayer?.at(-1)).toEqual(['event', eventName]);
+      expect(Array.from(window.dataLayer?.at(-1) ?? [])).toEqual(['event', eventName]);
     },
   );
 
