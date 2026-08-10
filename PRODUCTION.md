@@ -4,7 +4,6 @@ Este documento registra decisões que dependem de dados reais ou da hospedagem. 
 
 ## Pendências externas
 
-- Fornecer as imagens finais aprovadas para `foto-pacientes.jpg`, `imagem-dna.png`, `foto-consultorio-1.jpg` e `foto-consultorio-2.jpg`. Até lá, os placeholders visuais existentes permanecem e os 404 desses quatro arquivos são tratados como pendência conhecida nos E2E.
 - Confirmar e preencher o endereço real em `src/data/contact.ts`.
 - Fornecer e aprovar clinicamente as respostas em `src/data/faq.ts`.
 - Definir `VITE_SITE_URL` no ambiente de build para habilitar canonical, `og:url`, JSON-LD e `sitemap.xml` com o domínio verdadeiro.

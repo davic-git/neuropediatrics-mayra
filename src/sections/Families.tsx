@@ -1,7 +1,6 @@
 import CTA from '../components/CTA';
 import Container from '../components/ui/Container';
 import IconBadge from '../components/ui/IconBadge';
-import PhotoSlot from '../components/ui/PhotoSlot';
 import { useReveal } from '../hooks/useReveal';
 import { Puzzle } from "lucide-react";
 
@@ -27,16 +26,6 @@ export default function Families() {
               clínico e necessidades da criança, sempre com escuta atenta da família.
             </p>
           </article>
-
-          <PhotoSlot
-            className="familia-figure"
-            src="/images/imagem-dna.png"
-            alt="Ilustração de dupla hélice de DNA"
-            label="imagem-dna.png"
-            caption="Imagem dna"
-            width={1000}
-            height={1300}
-          />
 
           <article className="familia-card">
             <IconBadge icon={Puzzle} className="familia-icon" />

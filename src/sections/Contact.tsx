@@ -1,7 +1,6 @@
 import CTA from '../components/CTA';
 import Container from '../components/ui/Container';
 import IconBadge from '../components/ui/IconBadge';
-import PhotoSlot from '../components/ui/PhotoSlot';
 import { APPOINTMENT_WHATSAPP_TEXT, CONTACT } from '../data/contact';
 import { useReveal } from '../hooks/useReveal';
 import { ANALYTICS_EVENTS } from '../utils/analytics-events';
@@ -30,15 +29,6 @@ export default function Contact() {
         </div>
 
         <div ref={gridRef} className={`contato-grid ${gridRevealClass}`}>
-          <PhotoSlot
-            className="contato-photo"
-            src="/images/foto-consultorio-1.jpg"
-            alt="Consultório da Dra. Mayra Martins"
-            label="foto-consultorio-1.jpg"
-            width={1000}
-            height={700}
-          />
-
           <div className="contato-card">
             <h3>Entre em contato</h3>
             <ul className="contato-list">
@@ -84,15 +74,6 @@ export default function Contact() {
               </li>
             </ul>
           </div>
-
-          <PhotoSlot
-            className="contato-photo"
-            src="/images/foto-consultorio-2.jpg"
-            alt="Recepção do consultório da Dra. Mayra Martins"
-            label="foto-consultorio-2.jpg"
-            width={1000}
-            height={700}
-          />
         </div>
       </Container>
     </section>

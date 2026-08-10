@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
-import { createAnalytics } from './analytics';
+import { initializeAnalytics, trackAnalyticsEvent } from './analytics';
 import { ANALYTICS_EVENTS } from './analytics-events';
 
 const TEST_MEASUREMENT_ID = 'G-TEST123456';
@@ -15,52 +15,88 @@ describe('analytics', () => {
     document.getElementById('ga4-gtag')?.remove();
   });
 
-  it('does nothing without a measurement ID', () => {
-    const analytics = createAnalytics({ measurementId: '', isProduction: true });
+  it.each([undefined, '', 'UA-123456', 'G-invalid-id'])(
+    'does not initialize without a valid GA4 Measurement ID: %s',
+    (measurementId) => {
+      expect(initializeAnalytics({ measurementId, isProduction: true })).toBe(false);
+      expect(document.getElementById('ga4-gtag')).not.toBeInTheDocument();
+      expect(window.dataLayer).toBeUndefined();
+      expect(window.gtag).toBeUndefined();
+    },
+  );
 
-    expect(analytics.initialize()).toBe(false);
-    analytics.trackEvent(ANALYTICS_EVENTS.WHATSAPP);
-
-    expect(document.getElementById('ga4-gtag')).not.toBeInTheDocument();
-    expect(window.dataLayer).toBeUndefined();
-  });
-
-  it('loads gtag asynchronously and initializes it only once in production', () => {
-    const analytics = createAnalytics({ measurementId: TEST_MEASUREMENT_ID, isProduction: true });
-
-    expect(analytics.initialize()).toBe(true);
-    expect(analytics.initialize()).toBe(false);
-
-    const script = document.getElementById('ga4-gtag');
-    expect(script).toHaveAttribute(
-      'src',
-      `https://www.googletagmanager.com/gtag/js?id=${TEST_MEASUREMENT_ID}`,
+  it('creates dataLayer, defines gtag and sends the official js and config commands', () => {
+    expect(initializeAnalytics({ measurementId: TEST_MEASUREMENT_ID, isProduction: true })).toBe(
+      true,
     );
-    expect(script).toHaveProperty('async', true);
-    expect(document.querySelectorAll('#ga4-gtag')).toHaveLength(1);
+
+    expect(window.dataLayer).toBeInstanceOf(Array);
+    expect(window.gtag).toBeTypeOf('function');
     expect(window.dataLayer?.[0]?.[0]).toBe('js');
+    expect(window.dataLayer?.[0]?.[1]).toBeInstanceOf(Date);
     expect(window.dataLayer?.[1]).toEqual([
       'config',
       TEST_MEASUREMENT_ID,
       {
-        allow_ad_personalization_signals: false,
         allow_google_signals: false,
+        allow_ad_personalization_signals: false,
       },
     ]);
   });
 
-  it.each(Object.values(ANALYTICS_EVENTS))('sends the %s event without personal parameters', (eventName) => {
-    const analytics = createAnalytics({ measurementId: TEST_MEASUREMENT_ID, isProduction: true });
+  it('creates the async gtag.js script exactly once', () => {
+    initializeAnalytics({ measurementId: TEST_MEASUREMENT_ID, isProduction: true });
+    initializeAnalytics({ measurementId: TEST_MEASUREMENT_ID, isProduction: true });
 
-    analytics.trackEvent(eventName);
+    const scripts = document.querySelectorAll('#ga4-gtag');
+    expect(scripts).toHaveLength(1);
+    expect(scripts[0]).toHaveAttribute(
+      'src',
+      `https://www.googletagmanager.com/gtag/js?id=${TEST_MEASUREMENT_ID}`,
+    );
+    expect(scripts[0]).toHaveProperty('async', true);
+  });
 
-    expect(window.dataLayer?.at(-1)).toEqual(['event', eventName]);
+  it('does not duplicate js or config commands when initialized again', () => {
+    initializeAnalytics({ measurementId: TEST_MEASUREMENT_ID, isProduction: true });
+    initializeAnalytics({ measurementId: TEST_MEASUREMENT_ID, isProduction: true });
+
+    expect(window.dataLayer?.filter(([command]) => command === 'js')).toHaveLength(1);
+    expect(window.dataLayer?.filter(([command]) => command === 'config')).toHaveLength(1);
+  });
+
+  it.each(Object.values(ANALYTICS_EVENTS))(
+    'sends the %s event without personal parameters',
+    (eventName) => {
+      initializeAnalytics({ measurementId: TEST_MEASUREMENT_ID, isProduction: true });
+      trackAnalyticsEvent(eventName);
+
+      expect(window.dataLayer?.at(-1)).toEqual(['event', eventName]);
+    },
+  );
+
+  it('keeps delegated click events centralized and does not duplicate them after reinitialization', () => {
+    initializeAnalytics({ measurementId: TEST_MEASUREMENT_ID, isProduction: true });
+    initializeAnalytics({ measurementId: TEST_MEASUREMENT_ID, isProduction: true });
+    const button = document.createElement('button');
+    button.dataset.analyticsEvent = ANALYTICS_EVENTS.WHATSAPP;
+    document.body.append(button);
+
+    button.click();
+
+    expect(
+      window.dataLayer?.filter(
+        (command) => command[0] === 'event' && command[1] === ANALYTICS_EVENTS.WHATSAPP,
+      ),
+    ).toHaveLength(1);
+    button.remove();
   });
 
   it('stays disabled outside production', () => {
-    const analytics = createAnalytics({ measurementId: TEST_MEASUREMENT_ID, isProduction: false });
-
-    expect(analytics.initialize()).toBe(false);
+    expect(
+      initializeAnalytics({ measurementId: TEST_MEASUREMENT_ID, isProduction: false }),
+    ).toBe(false);
     expect(document.getElementById('ga4-gtag')).not.toBeInTheDocument();
+    expect(window.dataLayer).toBeUndefined();
   });
 });

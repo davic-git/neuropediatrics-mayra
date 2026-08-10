@@ -24,11 +24,6 @@ const viewports = [
 ] as const;
 
 const expectedUnavailablePreviewResources = new Set([
-  '/images/hero-consulta.jpg',
-  '/images/foto-mayra-benicio.jpg',
-  '/images/imagem-dna.png',
-  '/images/foto-consultorio-1.jpg',
-  '/images/foto-consultorio-2.jpg',
   '/_vercel/speed-insights/script.js',
 ]);
 
@@ -217,10 +212,36 @@ test('serves the production preview with security headers', async ({ request }) 
   const contentSecurityPolicy = response.headers()['content-security-policy'];
 
   expect(contentSecurityPolicy).toContain("default-src 'self'");
-  expect(contentSecurityPolicy).toContain('https://*.ingest.sentry.io');
-  expect(contentSecurityPolicy).toContain('https://*.ingest.us.sentry.io');
-  expect(contentSecurityPolicy).toContain('https://www.googletagmanager.com');
-  expect(contentSecurityPolicy).toContain('https://www.google-analytics.com');
+  expect(contentSecurityPolicy).toContain(
+    "script-src 'self' https://www.googletagmanager.com",
+  );
+  expect(contentSecurityPolicy).toContain(
+    "img-src 'self' data: https://www.google-analytics.com https://region1.google-analytics.com",
+  );
+  expect(contentSecurityPolicy).toContain("font-src 'self'");
+  expect(contentSecurityPolicy).toContain(
+    "connect-src 'self' https://o4511403723718656.ingest.us.sentry.io https://www.googletagmanager.com https://www.google-analytics.com https://analytics.google.com https://region1.google-analytics.com https://region1.analytics.google.com",
+  );
+  expect(contentSecurityPolicy).not.toContain('unsafe-eval');
+  expect(contentSecurityPolicy).not.toContain('https://*.ingest');
   expect(response.headers()['x-content-type-options']).toBe('nosniff');
   expect(response.headers()['referrer-policy']).toBe('strict-origin-when-cross-origin');
+});
+
+test('serves the favicon and contains no removed image or external font references', async ({
+  page,
+  request,
+}) => {
+  const faviconResponse = await request.get('/favicon.ico');
+  expect(faviconResponse.ok()).toBe(true);
+
+  await page.goto('/');
+  const html = await page.locator('html').evaluate((element) => element.outerHTML);
+  expect(html).not.toContain('/favicon.svg');
+  expect(html).not.toContain('/images/imagem-dna.png');
+  expect(html).not.toContain('/images/foto-consultorio-1.jpg');
+  expect(html).not.toContain('/images/foto-consultorio-2.jpg');
+  expect(html).not.toContain('fonts.googleapis.com');
+  expect(html).not.toContain('fonts.gstatic.com');
+  expect(html).not.toContain('Open Sans');
 });
