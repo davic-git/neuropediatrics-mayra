@@ -43,7 +43,7 @@ export function usePinnedCarousel(itemCount: number) {
     }
 
     const setStickyHeight = () => {
-      stickyWrap.style.height = `${itemCount * 100}vh`;
+      stickyWrap.style.height = `${itemCount * 100}svh`;
     };
 
     let ticking = false;
@@ -90,7 +90,7 @@ export function usePinnedCarousel(itemCount: number) {
       });
     };
 
-    const onScrollOrResize = () => {
+    const scheduleUpdate = () => {
       if (!ticking) {
         animationFrame = window.requestAnimationFrame(() => {
           animationFrame = null;
@@ -100,17 +100,21 @@ export function usePinnedCarousel(itemCount: number) {
       }
     };
 
-    setStickyHeight();
-    updateCarousel();
+    const onResize = () => {
+      setStickyHeight();
+      scheduleUpdate();
+    };
 
-    window.addEventListener('resize', setStickyHeight);
-    window.addEventListener('scroll', onScrollOrResize, { passive: true });
-    window.addEventListener('resize', onScrollOrResize);
+    setStickyHeight();
+    setItemAccessibility(0);
+    scheduleUpdate();
+
+    window.addEventListener('scroll', scheduleUpdate, { passive: true });
+    window.addEventListener('resize', onResize);
 
     return () => {
-      window.removeEventListener('resize', setStickyHeight);
-      window.removeEventListener('scroll', onScrollOrResize);
-      window.removeEventListener('resize', onScrollOrResize);
+      window.removeEventListener('scroll', scheduleUpdate);
+      window.removeEventListener('resize', onResize);
       if (animationFrame !== null) window.cancelAnimationFrame(animationFrame);
       stickyWrap.style.height = '';
       setItemAccessibility(null);

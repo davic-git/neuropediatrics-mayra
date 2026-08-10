@@ -8,6 +8,8 @@ interface PhotoSlotProps {
   caption?: string;
   width: number;
   height: number;
+  srcSet?: string;
+  sizes?: string;
   loading?: 'eager' | 'lazy';
   decoding?: 'sync' | 'async' | 'auto';
   fetchPriority?: 'high' | 'low' | 'auto';
@@ -21,6 +23,8 @@ export default function PhotoSlot({
   caption,
   width,
   height,
+  srcSet,
+  sizes,
   loading = 'lazy',
   decoding = 'async',
   fetchPriority = 'auto',
@@ -34,6 +38,8 @@ export default function PhotoSlot({
         alt={alt}
         width={width}
         height={height}
+        srcSet={srcSet}
+        sizes={sizes}
         loading={loading}
         decoding={decoding}
         fetchPriority={fetchPriority}

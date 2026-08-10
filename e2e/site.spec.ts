@@ -1,15 +1,26 @@
 import { expect, test } from '@playwright/test';
 
 const viewports = [
+  { name: 'desktop-qhd', width: 2560, height: 1440 },
   { name: 'desktop-full-hd', width: 1920, height: 1080 },
   { name: 'desktop', width: 1440, height: 900 },
   { name: 'laptop', width: 1366, height: 768 },
+  { name: 'laptop-small', width: 1280, height: 720 },
+  { name: 'tablet-large-portrait', width: 1024, height: 1366 },
   { name: 'tablet-landscape', width: 1024, height: 768 },
+  { name: 'tablet-medium', width: 820, height: 1180 },
   { name: 'tablet-portrait', width: 768, height: 1024 },
+  { name: 'mobile-large', width: 430, height: 932 },
+  { name: 'mobile-medium', width: 412, height: 915 },
   { name: 'mobile', width: 390, height: 844 },
+  { name: 'mobile-compact', width: 375, height: 812 },
   { name: 'mobile-small', width: 360, height: 800 },
+  { name: 'mobile-minimum', width: 320, height: 568 },
+  { name: 'phone-landscape-large', width: 932, height: 430 },
   { name: 'phone-landscape', width: 844, height: 390 },
+  { name: 'phone-landscape-medium', width: 812, height: 375 },
   { name: 'phone-landscape-small', width: 740, height: 360 },
+  { name: 'phone-landscape-minimum', width: 667, height: 375 },
 ] as const;
 
 const expectedPendingImages = new Set([
@@ -24,7 +35,14 @@ const expectedPendingImages = new Set([
 for (const viewport of viewports) {
   test(`renders without horizontal overflow at ${viewport.name}`, async ({ page }) => {
     await page.setViewportSize(viewport);
+    const runtimeErrors: string[] = [];
     const unexpectedResponses: string[] = [];
+    page.on('console', (message) => {
+      if (message.type() === 'error' && !message.text().includes('Failed to load resource')) {
+        runtimeErrors.push(message.text());
+      }
+    });
+    page.on('pageerror', (error) => runtimeErrors.push(error.message));
     page.on('response', (response) => {
       const url = new URL(response.url());
       if (
@@ -37,9 +55,11 @@ for (const viewport of viewports) {
     });
 
     await page.goto('/');
+    await page.locator('footer').scrollIntoViewIfNeeded();
     await expect(page.locator('h1')).toHaveCount(1);
     await expect(page.locator('main > section')).toHaveCount(7);
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+    expect(runtimeErrors).toEqual([]);
     expect(unexpectedResponses).toEqual([]);
   });
 }
@@ -77,7 +97,7 @@ test('keeps all service cards accessible with reduced motion', async ({ page }) 
   }
 });
 
-test('opens WhatsApp links safely in a new tab', async ({ page }) => {
+test('opens external links safely and builds WhatsApp URLs correctly', async ({ page }) => {
   await page.goto('/');
   const links = page.locator('a[target="_blank"]');
   const count = await links.count();
@@ -85,6 +105,19 @@ test('opens WhatsApp links safely in a new tab', async ({ page }) => {
 
   for (let index = 0; index < count; index += 1) {
     await expect(links.nth(index)).toHaveAttribute('rel', /noopener/);
-    await expect(links.nth(index)).toHaveAttribute('href', /^https:\/\/wa\.me\//);
   }
+
+  const whatsAppLinks = page.locator('a.btn-whatsapp');
+  expect(await whatsAppLinks.count()).toBeGreaterThan(0);
+  for (let index = 0; index < (await whatsAppLinks.count()); index += 1) {
+    await expect(whatsAppLinks.nth(index)).toHaveAttribute('href', /^https:\/\/wa\.me\/5524999459027\?text=/);
+  }
+});
+
+test('serves the production preview with security headers', async ({ request }) => {
+  const response = await request.get('/');
+
+  expect(response.headers()['content-security-policy']).toContain("default-src 'self'");
+  expect(response.headers()['x-content-type-options']).toBe('nosniff');
+  expect(response.headers()['referrer-policy']).toBe('strict-origin-when-cross-origin');
 });

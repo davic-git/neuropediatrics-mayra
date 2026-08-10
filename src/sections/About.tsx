@@ -4,7 +4,9 @@ import IconBadge from '../components/ui/IconBadge';
 import PhotoSlot from '../components/ui/PhotoSlot';
 import { ABOUT_CARDS } from '../data/about';
 import { useReveal } from '../hooks/useReveal';
-import aboutPhoto from '../assets/images/about/foto-mayra-benicio.jpeg';
+import aboutPhoto480 from '../assets/images/about/foto-mayra-benicio-480.avif';
+import aboutPhoto720 from '../assets/images/about/foto-mayra-benicio-720.avif';
+import aboutPhoto960 from '../assets/images/about/foto-mayra-benicio-960.avif';
 
 export default function About() {
   const [photoRef, photoRevealClass] = useReveal<HTMLDivElement>();
@@ -16,11 +18,14 @@ export default function About() {
         <div ref={photoRef} className={`sobre-photo-wrap ${photoRevealClass}`}>
           <PhotoSlot
             className="sobre-photo"
-            src={aboutPhoto}
+            src={aboutPhoto960}
+            srcSet={`${aboutPhoto480} 480w, ${aboutPhoto720} 720w, ${aboutPhoto960} 960w`}
+            sizes="(max-width: 1080px) min(88vw, 380px), min(38vw, 510px)"
             alt="Dra. Mayra Martins com seu filho Benício"
-            label="foto-mayra-benicio.jpeg"
+            label="foto-mayra-benicio.avif"
             width={960}
             height={1280}
+            fetchPriority="low"
           />
           <div className="sobre-badge">
             <span className="sobre-badge-number">8+</span>

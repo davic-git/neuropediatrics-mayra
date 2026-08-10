@@ -8,10 +8,9 @@ export default function FloatingWhatsapp() {
       target="_blank"
       rel="noopener noreferrer"
       className="whatsapp-float btn-whatsapp"
-      aria-label="Falar no WhatsApp"
+      aria-label="Falar com a Dra. Mayra pelo WhatsApp (abre em nova aba)"
     >
       <img src={whatsappIcon} alt="" aria-hidden="true" />
-      <span className="visually-hidden">Abre em nova aba</span>
     </a>
   );
 }

@@ -107,20 +107,14 @@
 }
 
 .brand-logo img {
-  position: absolute;
-  width: auto;
-  max-width: none;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .brand-logo-header {
   width: 179.35px;
   height: 55px;
-}
-
-.brand-logo-header img {
-  height: 174.91px;
-  left: -40.99px;
-  top: -59.61px;
 }
 
 .main-nav { flex: 1 1 auto; min-width: 0; }
@@ -332,6 +326,7 @@
 
 .hero-visual {
   position: relative;
+  width: 100%;
   aspect-ratio: 1 / 0.85;
   display: flex;
   align-items: center;
@@ -438,7 +433,7 @@
   font-style: normal;
   font-weight: 700;
   font-size: 0.85rem;
-  color: var(--white);
+  color: var(--teal-dark);
 }
 
 .sobre-cards {
@@ -909,12 +904,6 @@
   margin-bottom: 18px;
 }
 
-.brand-logo-footer img {
-  height: 165.37px;
-  left: -38.76px;
-  top: -56.36px;
-}
-
 .footer-brand p {
   color: rgba(249,245,236,0.7);
   font-size: 0.92rem;
@@ -983,7 +972,7 @@
 .whatsapp-float {
   position: fixed;
   right: 24px;
-  bottom: 24px;
+  bottom: max(24px, env(safe-area-inset-bottom));
   width: 60px; height: 60px;
   border-radius: 50%;
   background: #25D366;
@@ -1094,12 +1083,6 @@
     height: 54px;
   }
 
-  .brand-logo-header img {
-    height: 118.41px;
-    left: -60.48px;
-    top: -30.18px;
-  }
-
 }
 
 @media (max-width: 860px) {
@@ -1131,14 +1114,14 @@
     height: 48px;
   }
 
-  .brand-logo-header img {
-    height: 105.24px;
-    left: -53.75px;
-    top: -26.82px;
-  }
   .hero-title { font-size: 1.9rem; }
   h2 { font-size: 1.8rem; }
-  .whatsapp-float { width: 52px; height: 52px; right: 16px; bottom: 16px; }
+  .whatsapp-float {
+    width: 52px;
+    height: 52px;
+    right: max(16px, env(safe-area-inset-right));
+    bottom: max(16px, env(safe-area-inset-bottom));
+  }
 }
 
 @media (max-width: 991px), (max-height: 650px), (prefers-reduced-motion: reduce) {

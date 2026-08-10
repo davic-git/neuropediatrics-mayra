@@ -3,13 +3,12 @@ import Button from '../components/ui/Button';
 import Container from '../components/ui/Container';
 import PhotoSlot from '../components/ui/PhotoSlot';
 import { useMediaQuery, useReducedMotion } from '../hooks/useMediaQuery';
-import { useReveal } from '../hooks/useReveal';
-import heroPhoto from '../assets/images/hero/foto-mayra-neuropediatra.jpeg';
+import heroPhoto420 from '../assets/images/hero/foto-mayra-neuropediatra-420.avif';
+import heroPhoto640 from '../assets/images/hero/foto-mayra-neuropediatra-640.avif';
+import heroPhoto853 from '../assets/images/hero/foto-mayra-neuropediatra-853.avif';
 
 export default function Hero() {
   const parallaxRef = useRef<HTMLDivElement | null>(null);
-  const [copyRef, copyRevealClass] = useReveal<HTMLDivElement>();
-  const [visualRef, visualRevealClass] = useReveal<HTMLDivElement>(parallaxRef);
   const isDesktop = useMediaQuery('(min-width: 992px)');
   const reducedMotion = useReducedMotion();
 
@@ -44,7 +43,7 @@ export default function Hero() {
   return (
     <section className="section hero" id="inicio">
       <Container className="hero-grid">
-        <div ref={copyRef} className={`hero-copy ${copyRevealClass}`}>
+        <div className="hero-copy">
           <h1 className="hero-title">
             Cuidado especializado para o desenvolvimento neurológico do <span>seu filho</span>
           </h1>
@@ -60,15 +59,17 @@ export default function Hero() {
           </div>
         </div>
 
-        <div ref={visualRef} className={`hero-visual ${visualRevealClass}`}>
+        <div ref={parallaxRef} className="hero-visual">
           <div className="hero-blob hero-blob-sage" aria-hidden="true"></div>
           <div className="hero-blob hero-blob-gold" aria-hidden="true"></div>
           <div className="hero-blob hero-blob-sky" aria-hidden="true"></div>
           <PhotoSlot
             className="hero-photo"
-            src={heroPhoto}
+            src={heroPhoto853}
+            srcSet={`${heroPhoto420} 420w, ${heroPhoto640} 640w, ${heroPhoto853} 853w`}
+            sizes="(max-width: 1080px) min(88vw, 370px), min(44vw, 520px)"
             alt="Dra. Mayra Martins em seu consultório"
-            label="foto-mayra-neuropediatra.jpeg"
+            label="foto-mayra-neuropediatra.avif"
             width={853}
             height={1280}
             loading="eager"

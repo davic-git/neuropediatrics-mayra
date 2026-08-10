@@ -11,16 +11,20 @@ const indexPath = resolve(clientDirectory, 'index.html');
 
 const env = loadEnv('production', projectRoot, '');
 const rawSiteUrl = process.env.VITE_SITE_URL || env.VITE_SITE_URL || '';
-const siteUrl = rawSiteUrl.trim().replace(/\/+$/, '');
 
-function isPublicUrl(value) {
+function normalizePublicUrl(value) {
   try {
     const url = new URL(value);
-    return url.protocol === 'https:' || url.protocol === 'http:';
+    if (url.protocol !== 'https:' && url.protocol !== 'http:') return '';
+    url.hash = '';
+    url.search = '';
+    return url.href.replace(/\/+$/, '');
   } catch {
-    return false;
+    return '';
   }
 }
+
+const siteUrl = normalizePublicUrl(rawSiteUrl.trim());
 
 try {
   const [{ render }, template] = await Promise.all([
@@ -28,9 +32,25 @@ try {
     readFile(indexPath, 'utf8'),
   ]);
 
-  let html = template.replace('<div id="root"></div>', `<div id="root">${render()}</div>`);
+  const stylesheetMatch = template.match(/<link rel="stylesheet"[^>]*href="([^\"]+\.css)"[^>]*>/);
+  let htmlTemplate = template;
+  let inlinedStylesheetPath = '';
 
-  if (isPublicUrl(siteUrl)) {
+  if (stylesheetMatch) {
+    const stylesheetUrl = new URL(stylesheetMatch[1], 'https://local.invalid');
+    const relativeStylesheetPath = decodeURIComponent(stylesheetUrl.pathname).replace(/^\/+/, '');
+    const stylesheetPath = resolve(clientDirectory, relativeStylesheetPath);
+    const stylesheet = await readFile(stylesheetPath, 'utf8');
+    htmlTemplate = htmlTemplate.replace(
+      stylesheetMatch[0],
+      `<style data-build="critical-css">${stylesheet}</style>`,
+    );
+    inlinedStylesheetPath = stylesheetPath;
+  }
+
+  let html = htmlTemplate.replace('<div id="root"></div>', `<div id="root">${render()}</div>`);
+
+  if (siteUrl) {
     const structuredData = JSON.stringify({
       '@context': 'https://schema.org',
       '@type': 'WebSite',
@@ -63,6 +83,7 @@ try {
   }
 
   await writeFile(indexPath, html);
+  if (inlinedStylesheetPath) await rm(inlinedStylesheetPath);
 } finally {
   await rm(serverDirectory, { recursive: true, force: true });
 }

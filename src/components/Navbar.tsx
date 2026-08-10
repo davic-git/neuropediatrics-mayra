@@ -6,16 +6,27 @@ import { APPOINTMENT_WHATSAPP_TEXT } from '../data/contact';
 import { MAIN_NAV_LINKS, NAV_LINKS } from '../data/navigation';
 
 export default function Navbar() {
-  const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
+  const headerRef = useRef<HTMLElement | null>(null);
   const toggleRef = useRef<HTMLButtonElement | null>(null);
   const mobileNavRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
-    const onScroll = () => setIsScrolled(window.scrollY > 12);
-    onScroll();
+    let animationFrame: number | null = null;
+    const updateHeader = () => {
+      animationFrame = null;
+      headerRef.current?.classList.toggle('is-scrolled', window.scrollY > 12);
+    };
+    const onScroll = () => {
+      if (animationFrame === null) animationFrame = window.requestAnimationFrame(updateHeader);
+    };
+
+    updateHeader();
     window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      if (animationFrame !== null) window.cancelAnimationFrame(animationFrame);
+    };
   }, []);
 
   const closeMobile = useCallback((restoreFocus = true) => {
@@ -94,7 +105,7 @@ export default function Navbar() {
 
   return (
     <>
-      <header className={`site-header${isScrolled ? ' is-scrolled' : ''}`} id="site-header">
+      <header ref={headerRef} className="site-header" id="site-header">
         <div className="header-inner">
           <a href="#topo" className="brand" aria-label="Mayra Martins Neuropediatria — início">
             <BrandLogo placement="header" />
