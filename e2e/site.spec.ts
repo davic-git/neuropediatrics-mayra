@@ -256,8 +256,10 @@ test('serves the production preview with security headers', async ({ request }) 
   );
   expect(contentSecurityPolicy).toContain("font-src 'self'");
   expect(contentSecurityPolicy).toContain(
-    "connect-src 'self' https://o4511403723718656.ingest.us.sentry.io https://www.googletagmanager.com https://www.google-analytics.com https://analytics.google.com https://region1.google-analytics.com https://region1.analytics.google.com",
+    "connect-src 'self' https://o4511403723718656.ingest.us.sentry.io https://www.googletagmanager.com https://www.google-analytics.com https://analytics.google.com https://region1.google-analytics.com https://region1.analytics.google.com https://www.google.com",
   );
+  expect(contentSecurityPolicy).not.toContain('https://google.com');
+  expect(contentSecurityPolicy).not.toContain('*.google.com');
   expect(contentSecurityPolicy).not.toContain('unsafe-eval');
   expect(contentSecurityPolicy).not.toContain('https://*.ingest');
   expect(response.headers()['x-content-type-options']).toBe('nosniff');

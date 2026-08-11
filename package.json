@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "typecheck": "tsc -b",
-    "build": "tsc -b && vite build && vite build --ssr src/entry-server.tsx --outDir dist-server && node scripts/prerender.mjs",
+    "build": "npm run verify:security-headers && tsc -b && vite build && vite build --ssr src/entry-server.tsx --outDir dist-server && node scripts/prerender.mjs",
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "vitest run",
@@ -14,6 +14,7 @@
     "test:watch": "vitest",
     "test:e2e": "playwright test",
     "verify:production:analytics": "node scripts/verify-production-analytics.mjs",
+    "verify:security-headers": "node scripts/verify-security-headers.mjs",
     "check": "npm run typecheck && npm run lint && npm run test:coverage && npm run build"
   },
   "dependencies": {

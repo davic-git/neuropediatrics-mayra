@@ -13,7 +13,9 @@ Este documento registra decisões que dependem de dados reais ou da hospedagem. 
 
 ## Segurança e headers
 
-`public/_headers` configura CSP, HSTS, proteção contra framing, `nosniff`, referrer policy, permissions policy e cache para hosts estáticos compatíveis com o formato `_headers`. O `vite preview` aplica a mesma política, exceto HSTS, para permitir validação E2E.
+`vercel.json` é a fonte efetiva dos headers no deployment da Vercel. `public/_headers` mantém a mesma política para hosts estáticos compatíveis com esse formato, e `vite.config.ts` a replica no preview local, exceto HSTS, para permitir validação E2E. `npm run verify:security-headers` compara as três cópias e interrompe o build se houver divergência.
+
+O `connect-src` permite explicitamente `https://www.google.com` porque a Google tag atual pode usar `https://www.google.com/g/collect`. O domínio raiz `https://google.com`, curingas, endpoints de Ads e DoubleClick não são liberados sem request real ou recurso configurado que os justifique. `ERR_BLOCKED_BY_CLIENT` é bloqueio do navegador/extensão e não deve ser contornado pela CSP.
 
 A plataforma final deve confirmar que esses headers foram realmente publicados. HSTS só deve permanecer ativo quando o domínio e seus subdomínios funcionarem exclusivamente em HTTPS. `style-src 'unsafe-inline'` é necessário porque o CSS crítico é incorporado ao HTML e as animações calculam estilos inline; `unsafe-eval` não é usado.
 
