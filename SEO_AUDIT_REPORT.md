@@ -2,7 +2,7 @@
 
 ## Resumo executivo
 
-A Home foi otimizada de forma conservadora para reforçar a entidade da Dra. Mayra Martins e sua atuação em neuropediatria. Não houve alteração de layout, integrações, rotas ou conteúdo clínico. A cidade/UF profissional, os dois endereços de atendimento, o CRM, o RQE, o perfil no Doctoralia e o perfil profissional no Google Maps/Google Business foram posteriormente confirmados.
+A Home foi otimizada de forma conservadora para reforçar a entidade da Dra. Mayra Martins e sua atuação em neuropediatria. Não houve alteração de layout, integrações, rotas ou conteúdo clínico. A cidade/UF profissional, o endereço de atendimento, o CRM, o RQE, o perfil no Doctoralia, o canal no YouTube e o perfil profissional no Google Maps/Google Business foram posteriormente confirmados.
 
 ## Auditoria anterior à implementação
 
@@ -27,7 +27,7 @@ A Home foi otimizada de forma conservadora para reforçar a entidade da Dra. May
 - H1 não identificava a Dra. Mayra nominalmente.
 - H2 “Porque nos escolher?” era genérico e pouco útil para a entidade.
 - JSON-LD descrevia apenas `WebSite`, sem entidade da médica nem relações.
-- Rótulo “Endereço” era incorreto: o valor continha somente nomes de locais de atendimento.
+- Rótulo “Endereço” era incorreto: o valor identificava o local de atendimento.
 - Clínicas apareciam na seção de contato, mas não no footer.
 - Faltava `twitter:image:alt` e não havia teste dedicado do SEO prerenderizado.
 
@@ -70,25 +70,25 @@ O build cria um único `@graph`, com referências por `@id` estável:
 - `WebPage`: `https://www.dramayramartins.com.br/#webpage`
 - `Person` + `Physician`: `https://www.dramayramartins.com.br/#physician`
 - `ImageObject`: `https://www.dramayramartins.com.br/#primaryimage`
-- `Organization`: Center Kids
 - `Organization`: Colo de Mãe
 
-A `WebPage` aponta para a médica com `mainEntity`; a médica aponta para a imagem, para as duas organizações por `affiliation` e para os perfis oficiais. `medicalSpecialty` usa os valores Schema.org `Neurologic` e `Pediatric`. CRM e RQE são representados como credenciais distintas em `hasCredential`, ambas do tipo `EducationalOccupationalCredential`: o CRM usa o identificador `CRM-RJ` e o RQE usa o identificador `RQE`. Nenhuma especialidade adicional foi inferida do número do RQE. `areaServed` identifica Volta Redonda dentro do estado do Rio de Janeiro. Cada organização de atendimento possui seu próprio `address` do tipo `PostalAddress`; nenhum endereço foi aplicado à entidade `Person` + `Physician`.
+A `WebPage` aponta para a médica com `mainEntity`; a médica aponta para a imagem, para a organização por `affiliation` e para os perfis oficiais. `medicalSpecialty` usa os valores Schema.org `Neurologic` e `Pediatric`. CRM e RQE são representados como credenciais distintas em `hasCredential`, ambas do tipo `EducationalOccupationalCredential`: o CRM usa o identificador `CRM-RJ` e o RQE usa o identificador `RQE`. Nenhuma especialidade adicional foi inferida do número do RQE. `areaServed` identifica Volta Redonda dentro do estado do Rio de Janeiro. A organização de atendimento possui seu próprio `address` do tipo `PostalAddress`; nenhum endereço foi aplicado à entidade `Person` + `Physician`.
 
 ### sameAs utilizados
 
 - `https://www.instagram.com/dra.mayra_martins/`
 - `https://www.threads.com/@dra.mayra_martins`
 - `https://www.facebook.com/dra.maymartins/`
+- `https://www.youtube.com/channel/UC5OpW7xubz-Qoum9aXM5hYA`
 - `https://www.doctoralia.com.br/mayra-martins-6/pediatra/volta-redonda`
 - `https://maps.app.goo.gl/XkDMnif7T6Szp8En8`
 
-Parâmetros de rastreamento foram removidos das URLs de entidade. O perfil oficial no Doctoralia foi incluído após confirmação explícita e também aparece na área de perfis profissionais do footer. A URL pública do Google Maps/Google Business foi adicionada somente ao `sameAs` da médica porque representa diretamente a profissional; nenhum dado técnico do redirecionamento foi incorporado.
+Parâmetros de rastreamento foram removidos das URLs de entidade. Os perfis oficiais no Doctoralia e YouTube foram incluídos após confirmação explícita e também aparecem na área de perfis profissionais do footer. A URL pública do Google Maps/Google Business foi adicionada somente ao `sameAs` da médica porque representa diretamente a profissional; nenhum dado técnico do redirecionamento foi incorporado.
 
 ### SEO local
 
-- O falso rótulo “Endereço” foi substituído por “Locais de atendimento”.
-- Center Kids e Colo de Mãe aparecem separadamente no contato, footer e grafo de entidade, cada uma associada somente ao próprio endereço confirmado.
+- O falso rótulo “Endereço” foi substituído por “Local de atendimento”.
+- Colo de Mãe aparece no contato, footer e grafo de entidade, associada ao endereço confirmado.
 - Telefone e e-mail permanecem consistentes no conteúdo e no JSON-LD.
 - Volta Redonda - RJ foi incluída a partir de confirmação explícita, não inferida pelo DDD do telefone.
 

@@ -65,6 +65,88 @@ for (const viewport of viewports) {
   });
 }
 
+test('shows both clinic photos around the contact card', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto('/');
+
+  const contactGrid = page.locator('#contato .contato-grid');
+  const photos = contactGrid.locator('.contato-photo');
+  const card = contactGrid.locator('.contato-card');
+
+  await expect(photos).toHaveCount(2);
+  await expect(photos.nth(0).locator('img')).toHaveAttribute(
+    'alt',
+    'Consultório da Clínica Colo de Mãe',
+  );
+  await expect(photos.nth(1).locator('img')).toHaveAttribute(
+    'alt',
+    'Recepção da Clínica Colo de Mãe',
+  );
+
+  const [firstPhotoBox, cardBox, secondPhotoBox] = await Promise.all([
+    photos.nth(0).boundingBox(),
+    card.boundingBox(),
+    photos.nth(1).boundingBox(),
+  ]);
+
+  expect(firstPhotoBox?.x).toBeLessThan(cardBox?.x ?? 0);
+  expect(secondPhotoBox?.x).toBeGreaterThan(cardBox?.x ?? Number.POSITIVE_INFINITY);
+});
+
+test('shows the DNA image between the family cards on desktop', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto('/');
+
+  const row = page.locator('#para-familias .familias-row');
+  const cards = row.locator('.familia-card');
+  const figure = row.locator('.familia-figure');
+  const image = figure.locator('img');
+
+  await expect(cards).toHaveCount(2);
+  await expect(figure).toHaveCount(1);
+  await expect(image).toHaveAttribute('src', /imagem-dna/);
+  await expect(image).toHaveAttribute('alt', 'Ilustração de uma dupla hélice de DNA');
+
+  const [firstCardBox, figureBox, secondCardBox] = await Promise.all([
+    cards.nth(0).boundingBox(),
+    figure.boundingBox(),
+    cards.nth(1).boundingBox(),
+  ]);
+
+  expect(figureBox?.x).toBeGreaterThan(firstCardBox?.x ?? Number.POSITIVE_INFINITY);
+  expect(figureBox?.x).toBeLessThan(secondCardBox?.x ?? 0);
+});
+
+test('stacks family card, horizontal DNA image and card at equal widths on mobile', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto('/');
+
+  const row = page.locator('#para-familias .familias-row');
+  const cards = row.locator('.familia-card');
+  const figure = row.locator('.familia-figure');
+  const image = figure.locator('img');
+  const children = row.locator(':scope > *');
+
+  await expect(children.nth(0)).toHaveClass(/familia-card/);
+  await expect(children.nth(1)).toHaveClass(/familia-figure/);
+  await expect(children.nth(2)).toHaveClass(/familia-card/);
+
+  const [firstCardBox, figureBox, secondCardBox] = await Promise.all([
+    cards.nth(0).boundingBox(),
+    figure.boundingBox(),
+    cards.nth(1).boundingBox(),
+  ]);
+
+  expect(Math.abs((figureBox?.width ?? 0) - (firstCardBox?.width ?? 0))).toBeLessThanOrEqual(1);
+  expect(Math.abs((figureBox?.width ?? 0) - (secondCardBox?.width ?? 0))).toBeLessThanOrEqual(1);
+  expect(figureBox?.y).toBeGreaterThan(firstCardBox?.y ?? Number.POSITIVE_INFINITY);
+  expect(figureBox?.y).toBeLessThan(secondCardBox?.y ?? 0);
+  await expect(figure).toHaveCSS('aspect-ratio', '4 / 3');
+  await expect(image).toHaveCSS('transform', /matrix\(0, 1, -1, 0,/);
+});
+
 test('supports the mobile menu and FAQ by keyboard', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto('/');
@@ -127,6 +209,8 @@ test('keeps clear spacing between social links and footer copyright', async ({ p
     Number.parseFloat(getComputedStyle(element).paddingBottom),
   );
   expect(footerPadding).toBeGreaterThanOrEqual(72);
+  await expect(page.locator('.footer-bottom-inner')).toHaveCSS('padding-top', '40px');
+  await expect(page.locator('.footer-bottom-inner')).toHaveCSS('padding-bottom', '40px');
 });
 
 test('keeps the experience badge above the Mayra and Benício photo on mobile', async ({ page }) => {
@@ -135,15 +219,53 @@ test('keeps the experience badge above the Mayra and Benício photo on mobile', 
 
   await expect(page.locator('.sobre-badge')).toHaveCSS('z-index', '2');
   await expect(page.locator('.sobre-photo img')).toHaveCSS('z-index', '1');
+  await expect(page.locator('.sobre-cards')).toBeHidden();
+
+  const photoTop = await page.locator('.sobre-photo-wrap').evaluate((element) =>
+    element.getBoundingClientRect().top,
+  );
+  const contentTop = await page.locator('.sobre-content').evaluate((element) =>
+    element.getBoundingClientRect().top,
+  );
+  expect(photoTop).toBeLessThan(contentTop);
 });
 
-test('shows the confirmed CRM and RQE once in the professional biography', async ({ page }) => {
+test('keeps equal photo and text columns with full-width cards below on desktop', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 1000 });
   await page.goto('/');
 
-  await expect(page.getByText(/CRM RJ 52100773-4/)).toHaveCount(1);
-  await expect(page.getByText(/RQE 57481/)).toHaveCount(1);
-  await expect(page.locator('#sobre cite')).toContainText('CRM RJ 52100773-4');
-  await expect(page.locator('#sobre cite')).toContainText('RQE 57481');
+  const layout = await page.locator('.sobre-grid').evaluate((grid) => {
+    const photo = grid.querySelector<HTMLElement>('.sobre-photo-wrap');
+    const content = grid.querySelector<HTMLElement>('.sobre-content');
+    const cards = grid.querySelector<HTMLElement>('.sobre-cards');
+    const gridStyles = getComputedStyle(grid);
+    const horizontalPadding =
+      Number.parseFloat(gridStyles.paddingLeft) + Number.parseFloat(gridStyles.paddingRight);
+
+    return {
+      gridContentWidth: (grid as HTMLElement).clientWidth - horizontalPadding,
+      photoWidth: photo?.clientWidth ?? 0,
+      contentWidth: content?.clientWidth ?? 0,
+      cardsWidth: cards?.clientWidth ?? 0,
+    };
+  });
+
+  expect(Math.abs(layout.photoWidth - layout.contentWidth)).toBeLessThanOrEqual(1);
+  expect(Math.abs(layout.cardsWidth - layout.gridContentWidth)).toBeLessThanOrEqual(1);
+  await expect(page.locator('.sobre-cards .mini-card')).toHaveCount(4);
+});
+
+test('shows the complete personal story in the professional biography', async ({ page }) => {
+  await page.goto('/');
+
+  await expect(page.locator('#sobre .sobre-story p')).toHaveCount(4);
+  await expect(page.locator('#sobre .sobre-story')).toContainText(
+    'A Dra. Mayra Martins traz para sua prática uma experiência que vai além da formação médica.',
+  );
+  await expect(page.locator('#sobre .sobre-story strong')).toHaveText(
+    'Afinal, cada história, cada dor e cada família é única!',
+  );
+  await expect(page.locator('#sobre blockquote, #sobre cite')).toHaveCount(0);
 });
 
 test('keeps only the decorative color blobs in the conditions section', async ({ page }) => {
@@ -209,6 +331,7 @@ test('opens external links safely and builds WhatsApp URLs correctly', async ({ 
     'https://www.instagram.com/dra.mayra_martins/',
     'https://www.threads.com/@dra.mayra_martins',
     'https://www.facebook.com/dra.maymartins/',
+    'https://www.youtube.com/channel/UC5OpW7xubz-Qoum9aXM5hYA',
     'https://www.doctoralia.com.br/mayra-martins-6/pediatra/volta-redonda',
   ];
   for (const url of professionalProfileUrls) {
@@ -230,14 +353,7 @@ test('opens external links safely and builds WhatsApp URLs correctly', async ({ 
 
   const emailLinks = page.locator('a[href="mailto:dra.mayramartinsneuro@gmail.com"]');
   await expect(emailLinks).toHaveCount(2);
-  await expect(page.getByText(/Center Kids/)).toHaveCount(2);
   await expect(page.getByText(/Colo de Mãe/)).toHaveCount(2);
-  await expect(
-    page.getByText(
-      'Shopping 33/Torre I, Rua 40, 20 - Salas 401 a 407 - Vila Santa Cecília, Volta Redonda - RJ, 27260-200',
-      { exact: true },
-    ),
-  ).toHaveCount(1);
   await expect(
     page.getByText(
       'R. Vinte e Um, 87 - Vila Santa Cecília, Volta Redonda - RJ, 27261-610',
@@ -274,17 +390,17 @@ test('serves complete prerendered SEO metadata and a connected entity graph', as
   const structuredData = JSON.parse(jsonLd!);
   const graph = structuredData['@graph'] as Array<Record<string, unknown>>;
   const physician = graph.find((entity) => entity['@id']?.toString().endsWith('#physician'));
-  const centerKids = graph.find((entity) => entity['@id']?.toString().endsWith('#center-kids'));
   const coloDeMae = graph.find((entity) =>
     entity['@id']?.toString().endsWith('#clinica-colo-de-mae'),
   );
 
-  expect(graph).toHaveLength(6);
+  expect(graph).toHaveLength(5);
   expect(physician?.['@type']).toEqual(['Person', 'Physician']);
   expect(physician?.sameAs).toEqual([
     'https://www.instagram.com/dra.mayra_martins/',
     'https://www.threads.com/@dra.mayra_martins',
     'https://www.facebook.com/dra.maymartins/',
+    'https://www.youtube.com/channel/UC5OpW7xubz-Qoum9aXM5hYA',
     'https://www.doctoralia.com.br/mayra-martins-6/pediatra/volta-redonda',
     'https://maps.app.goo.gl/XkDMnif7T6Szp8En8',
   ]);
@@ -326,18 +442,6 @@ test('serves complete prerendered SEO metadata and a connected entity graph', as
     },
   ]);
   expect(physician).not.toHaveProperty('address');
-  expect(centerKids).toMatchObject({
-    '@type': 'Organization',
-    name: 'Center Kids',
-    address: {
-      '@type': 'PostalAddress',
-      streetAddress: 'Shopping 33/Torre I, Rua 40, 20 - Salas 401 a 407 - Vila Santa Cecília',
-      addressLocality: 'Volta Redonda',
-      addressRegion: 'RJ',
-      postalCode: '27260-200',
-      addressCountry: 'BR',
-    },
-  });
   expect(coloDeMae).toMatchObject({
     '@type': 'Organization',
     name: 'Colo de Mãe',
@@ -350,7 +454,6 @@ test('serves complete prerendered SEO metadata and a connected entity graph', as
       addressCountry: 'BR',
     },
   });
-  expect(centerKids).not.toHaveProperty('telephone');
   expect(coloDeMae).not.toHaveProperty('telephone');
 });
 
@@ -377,7 +480,7 @@ test('serves the production preview with security headers', async ({ request }) 
   expect(response.headers()['referrer-policy']).toBe('strict-origin-when-cross-origin');
 });
 
-test('serves the favicon and contains no removed image or external font references', async ({
+test('serves the favicon and contains no obsolete image or external font references', async ({
   page,
   request,
 }) => {
@@ -387,7 +490,6 @@ test('serves the favicon and contains no removed image or external font referenc
   await page.goto('/');
   const html = await page.locator('html').evaluate((element) => element.outerHTML);
   expect(html).not.toContain('/favicon.svg');
-  expect(html).not.toContain('/images/imagem-dna.png');
   expect(html).not.toContain('/images/foto-consultorio-1.jpg');
   expect(html).not.toContain('/images/foto-consultorio-2.jpg');
   expect(html).not.toContain('fonts.googleapis.com');

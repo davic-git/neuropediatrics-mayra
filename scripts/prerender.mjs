@@ -33,6 +33,7 @@ const entityProfiles = [
   'https://www.instagram.com/dra.mayra_martins/',
   'https://www.threads.com/@dra.mayra_martins',
   'https://www.facebook.com/dra.maymartins/',
+  'https://www.youtube.com/channel/UC5OpW7xubz-Qoum9aXM5hYA',
   'https://www.doctoralia.com.br/mayra-martins-6/pediatra/volta-redonda',
   'https://maps.app.goo.gl/XkDMnif7T6Szp8En8',
 ];
@@ -118,24 +119,9 @@ function buildStructuredData(pageUrl, socialImageUrl) {
           },
         },
         affiliation: [
-          { '@id': `${pageUrl}#center-kids` },
           { '@id': `${pageUrl}#clinica-colo-de-mae` },
         ],
         sameAs: entityProfiles,
-      },
-      {
-        '@type': 'Organization',
-        '@id': `${pageUrl}#center-kids`,
-        name: 'Center Kids',
-        address: {
-          '@type': 'PostalAddress',
-          streetAddress:
-            'Shopping 33/Torre I, Rua 40, 20 - Salas 401 a 407 - Vila Santa Cecília',
-          addressLocality: 'Volta Redonda',
-          addressRegion: 'RJ',
-          postalCode: '27260-200',
-          addressCountry: 'BR',
-        },
       },
       {
         '@type': 'Organization',

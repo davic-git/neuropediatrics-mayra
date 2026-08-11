@@ -13,10 +13,10 @@ Este documento registra decisões que dependem de dados reais ou da hospedagem. 
 - Registro profissional: CRM RJ 52100773-4.
 - Qualificação de especialista: RQE 57481.
 - Perfil profissional no Doctoralia: `https://www.doctoralia.com.br/mayra-martins-6/pediatra/volta-redonda`.
+- Canal oficial no YouTube: `https://www.youtube.com/channel/UC5OpW7xubz-Qoum9aXM5hYA`.
 - Perfil profissional no Google Maps/Google Business: `https://maps.app.goo.gl/XkDMnif7T6Szp8En8`.
-- Center Kids: Shopping 33/Torre I, Rua 40, 20 - Salas 401 a 407 - Vila Santa Cecília, Volta Redonda - RJ, 27260-200.
 - Colo de Mãe: R. Vinte e Um, 87 - Vila Santa Cecília, Volta Redonda - RJ, 27261-610.
-- Os endereços acima pertencem aos respectivos locais de atendimento e não são o endereço pessoal da Dra. Mayra Martins.
+- O endereço acima pertence ao local de atendimento e não é o endereço pessoal da Dra. Mayra Martins.
 
 ## Segurança e headers
 

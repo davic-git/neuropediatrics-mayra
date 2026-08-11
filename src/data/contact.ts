@@ -10,14 +10,6 @@ export const CONTACT = {
   hours: 'Segunda a Sexta de 8h às 18h',
   locations: [
     {
-      id: 'center-kids',
-      name: 'Center Kids',
-      city: 'Volta Redonda',
-      region: 'RJ',
-      address:
-        'Shopping 33/Torre I, Rua 40, 20 - Salas 401 a 407 - Vila Santa Cecília, Volta Redonda - RJ, 27260-200',
-    },
-    {
       id: 'colo-de-mae',
       name: 'Colo de Mãe',
       city: 'Volta Redonda',

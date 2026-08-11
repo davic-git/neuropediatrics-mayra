@@ -14,7 +14,7 @@ export default function BrandLogo({ placement }: BrandLogoProps) {
         sizes={
           placement === 'header'
             ? '(max-width: 480px) 105px, (max-width: 991px) 132px, 180px'
-            : '170px'
+            : '(max-width: 480px) 210px, (max-width: 860px) 220px, 240px'
         }
         alt="Mayra Martins Neuropediatria"
         width={720}

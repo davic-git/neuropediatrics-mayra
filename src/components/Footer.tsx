@@ -7,6 +7,7 @@ import { Stethoscope } from 'lucide-react';
 import instagramIcon from '../assets/icons/instagram.svg';
 import threadsIcon from '../assets/icons/threads.svg';
 import facebookIcon from '../assets/icons/facebook.svg';
+import youtubeIcon from '../assets/icons/youtube.svg';
 
 const SOCIAL_LINKS = [
   {
@@ -23,6 +24,11 @@ const SOCIAL_LINKS = [
     name: 'Facebook',
     href: 'https://www.facebook.com/dra.maymartins/',
     icon: facebookIcon,
+  },
+  {
+    name: 'YouTube',
+    href: 'https://www.youtube.com/channel/UC5OpW7xubz-Qoum9aXM5hYA',
+    icon: youtubeIcon,
   },
   {
     name: 'Doctoralia',

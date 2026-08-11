@@ -1,6 +1,9 @@
 import CTA from '../components/CTA';
 import Container from '../components/ui/Container';
 import IconBadge from '../components/ui/IconBadge';
+import PhotoSlot from '../components/ui/PhotoSlot';
+import coloDeMaePhoto from '../assets/images/contact/colo-de-mae.webp';
+import consultorioPhoto from '../assets/images/contact/consultorio-1.jpg';
 import { APPOINTMENT_WHATSAPP_TEXT, CONTACT } from '../data/contact';
 import { useReveal } from '../hooks/useReveal';
 import { ANALYTICS_EVENTS } from '../utils/analytics-events';
@@ -29,6 +32,15 @@ export default function Contact() {
         </div>
 
         <div ref={gridRef} className={`contato-grid ${gridRevealClass}`}>
+          <PhotoSlot
+            className="contato-photo"
+            src={consultorioPhoto}
+            alt="Consultório da Clínica Colo de Mãe"
+            label="consultorio-1.jpg"
+            width={510}
+            height={510}
+          />
+
           <div className="contato-card">
             <h3>Entre em contato</h3>
             <ul className="contato-list">
@@ -47,7 +59,7 @@ export default function Contact() {
               <li className="contato-location-item">
                 <IconBadge icon={MapPin} className="contato-icon" />
                 <div>
-                  <span className="contato-label">Locais de atendimento</span>
+                  <span className="contato-label">Local de atendimento</span>
                   <div className="contato-locations">
                     {CONTACT.locations.map((location) => (
                       <address className="contato-location" key={location.id}>
@@ -80,6 +92,15 @@ export default function Contact() {
               </li>
             </ul>
           </div>
+
+          <PhotoSlot
+            className="contato-photo"
+            src={coloDeMaePhoto}
+            alt="Recepção da Clínica Colo de Mãe"
+            label="colo-de-mae.webp"
+            width={680}
+            height={510}
+          />
         </div>
       </Container>
     </section>

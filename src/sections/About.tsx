@@ -11,6 +11,7 @@ import aboutPhoto960 from '../assets/images/about/foto-mayra-benicio-960.avif';
 export default function About() {
   const [photoRef, photoRevealClass] = useReveal<HTMLDivElement>();
   const [contentRef, contentRevealClass] = useReveal<HTMLDivElement>();
+  const [cardsRef, cardsRevealClass] = useReveal<HTMLDivElement>();
 
   return (
     <section className="section sobre" id="sobre">
@@ -20,7 +21,7 @@ export default function About() {
             className="sobre-photo"
             src={aboutPhoto960}
             srcSet={`${aboutPhoto480} 480w, ${aboutPhoto720} 720w, ${aboutPhoto960} 960w`}
-            sizes="(max-width: 1080px) min(88vw, 380px), min(38vw, 510px)"
+            sizes="(max-width: 860px) calc(100vw - 44px), min(44vw, 560px)"
             alt="Dra. Mayra Martins com seu filho Benício"
             label="foto-mayra-benicio.avif"
             width={960}
@@ -37,23 +38,39 @@ export default function About() {
           <Badge>Sobre a Dra. Mayra</Badge>
           <h2>Conheça a Dra. Mayra Martins</h2>
 
-          <blockquote className="sobre-quote">
-            Sou neuropediatra e, acima de tudo, alguém que entende de perto a jornada das famílias
-            atípicas. Meu filho, Benício, é neurodivergente — e essa vivência me ensinou que cada
-            criança tem seu próprio tempo e sua própria forma de ser compreendida. É esse olhar que
-            trago para cada consulta: técnico, atualizado e, sobretudo, humano.
-            <cite>— Dra. Mayra Martins · CRM RJ 52100773-4 · RQE 57481</cite>
-          </blockquote>
-
-          <div className="sobre-cards">
-            {ABOUT_CARDS.map((card) => (
-              <div className="mini-card" key={card.title}>
-                <IconBadge icon={card.icon} className="mini-icon" />
-                <h3>{card.title}</h3>
-                <p>{card.text}</p>
-              </div>
-            ))}
+          <div className="sobre-story">
+            <p>
+              A Dra. Mayra Martins traz para sua prática uma experiência que vai além da formação
+              médica. Ela é mãe neuroatípica de um menino no espectro autista, entre os níveis 1 e 2
+              de suporte, e sabe de perto como é estar do outro lado: lidar com dúvidas, medos e com
+              o peso que um diagnóstico pode trazer para uma família.
+            </p>
+            <p>
+              A própria Dra. Mayra também é neuroatípica, com TDAH moderado, dislexia e
+              disortografia. Foi alfabetizada apenas aos 10 anos, com o apoio de profissionais que
+              fizeram diferença em sua trajetória. Essas vivências lhe proporcionam um olhar mais
+              atento, empático e sensível às dificuldades de cada criança e de sua família.
+            </p>
+            <p>
+              Unindo experiência pessoal e conhecimento médico, busca se manter constantemente
+              atualizada sobre tratamentos, terapias e novas evidências, sempre com o objetivo de
+              oferecer um acompanhamento individualizado, cuidadoso e baseado em ciência.
+            </p>
+            <p>
+              <strong>Afinal, cada história, cada dor e cada família é única!</strong>
+            </p>
           </div>
+
+        </div>
+
+        <div ref={cardsRef} className={`sobre-cards ${cardsRevealClass}`}>
+          {ABOUT_CARDS.map((card) => (
+            <div className="mini-card" key={card.title}>
+              <IconBadge icon={card.icon} className="mini-icon" />
+              <h3>{card.title}</h3>
+              <p>{card.text}</p>
+            </div>
+          ))}
         </div>
       </Container>
     </section>
