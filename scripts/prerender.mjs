@@ -26,6 +26,86 @@ function normalizePublicUrl(value) {
 
 const siteUrl = normalizePublicUrl(rawSiteUrl.trim());
 
+const pageTitle = 'Dra. Mayra Martins | Neuropediatra';
+const pageDescription =
+  'Dra. Mayra Martins oferece acompanhamento em neuropediatria infantil, com avaliação individualizada, ciência, acolhimento e orientação às famílias.';
+const socialProfiles = [
+  'https://www.instagram.com/dra.mayra_martins/',
+  'https://www.threads.com/@dra.mayra_martins',
+  'https://www.facebook.com/dra.maymartins/',
+];
+
+function buildStructuredData(pageUrl, socialImageUrl) {
+  const websiteId = `${pageUrl}#website`;
+  const webpageId = `${pageUrl}#webpage`;
+  const physicianId = `${pageUrl}#physician`;
+  const imageId = `${pageUrl}#primaryimage`;
+
+  return {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'WebSite',
+        '@id': websiteId,
+        url: pageUrl,
+        name: 'Dra. Mayra Martins | Neuropediatra',
+        inLanguage: 'pt-BR',
+      },
+      {
+        '@type': 'WebPage',
+        '@id': webpageId,
+        url: pageUrl,
+        name: pageTitle,
+        description: pageDescription,
+        isPartOf: { '@id': websiteId },
+        mainEntity: { '@id': physicianId },
+        primaryImageOfPage: { '@id': imageId },
+        inLanguage: 'pt-BR',
+      },
+      {
+        '@type': 'ImageObject',
+        '@id': imageId,
+        url: socialImageUrl,
+        contentUrl: socialImageUrl,
+        width: 1731,
+        height: 909,
+        caption: 'Dra. Mayra Martins — Neuropediatra',
+      },
+      {
+        '@type': ['Person', 'Physician'],
+        '@id': physicianId,
+        name: 'Mayra Martins',
+        honorificPrefix: 'Dra.',
+        url: pageUrl,
+        image: { '@id': imageId },
+        description:
+          'Médica neuropediatra que oferece acompanhamento infantil individualizado, com ciência, acolhimento e orientação às famílias.',
+        telephone: '+55 24 99945-9027',
+        email: 'dra.mayramartinsneuro@gmail.com',
+        medicalSpecialty: [
+          'https://schema.org/Neurologic',
+          'https://schema.org/Pediatric',
+        ],
+        affiliation: [
+          { '@id': `${pageUrl}#center-kids` },
+          { '@id': `${pageUrl}#clinica-colo-de-mae` },
+        ],
+        sameAs: socialProfiles,
+      },
+      {
+        '@type': 'Organization',
+        '@id': `${pageUrl}#center-kids`,
+        name: 'Center Kids',
+      },
+      {
+        '@type': 'Organization',
+        '@id': `${pageUrl}#clinica-colo-de-mae`,
+        name: 'Clínica Colo de Mãe',
+      },
+    ],
+  };
+}
+
 try {
   const [{ render }, template] = await Promise.all([
     import(`${pathToFileURL(serverEntry).href}?t=${Date.now()}`),
@@ -53,13 +133,10 @@ try {
   if (siteUrl) {
     const pageUrl = `${siteUrl}/`;
     const socialImageUrl = `${siteUrl}/og-image.jpg`;
-    const structuredData = JSON.stringify({
-      '@context': 'https://schema.org',
-      '@type': 'WebSite',
-      name: 'Mayra Martins Neuropediatria',
-      url: siteUrl,
-      inLanguage: 'pt-BR',
-    }).replace(/</g, '\\u003c');
+    const structuredData = JSON.stringify(buildStructuredData(pageUrl, socialImageUrl)).replace(
+      /</g,
+      '\\u003c',
+    );
 
     const productionHead = [
       `    <link rel="canonical" href="${pageUrl}" />`,
@@ -69,6 +146,7 @@ try {
       '    <meta property="og:image:height" content="909" />',
       '    <meta property="og:image:alt" content="Mayra Martins — Neuropediatria" />',
       `    <meta name="twitter:image" content="${socialImageUrl}" />`,
+      '    <meta name="twitter:image:alt" content="Dra. Mayra Martins — Neuropediatra" />',
       `    <script type="application/ld+json">${structuredData}</script>`,
     ].join('\n');
     html = html.replace('  </head>', `${productionHead}\n  </head>`);

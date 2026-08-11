@@ -6,8 +6,10 @@ Este documento registra decisões que dependem de dados reais ou da hospedagem. 
 
 - Confirmar e preencher o endereço real em `src/data/contact.ts`.
 - Fornecer e aprovar clinicamente as respostas em `src/data/faq.ts`.
-- Definir `VITE_SITE_URL` no ambiente de build para habilitar canonical, `og:url`, JSON-LD e `sitemap.xml` com o domínio verdadeiro.
-- Fornecer uma imagem social aprovada. **PENDÊNCIA: OG IMAGE**.
+- Confirmar cidade e UF principais antes de incluí-las no title, conteúdo, NAP ou dados estruturados.
+- Fornecer CRM/RQE, URL do Google Business/Maps e Doctoralia, caso existam e sejam oficiais.
+- Confirmar os vínculos com Center Kids e Clínica Colo de Mãe e fornecer os respectivos endereços reais.
+- Fornecer uma imagem social definitiva aprovada; o build usa atualmente `public/og-image.jpg`.
 
 ## Segurança e headers
 

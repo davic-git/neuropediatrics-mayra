@@ -70,6 +70,7 @@ export default function Footer() {
               </a>
             </li>
             <li>{CONTACT.hours}</li>
+            <li>{CONTACT.address.label}</li>
           </ul>
           <ul className="footer-socials" aria-label="Redes sociais">
             {SOCIAL_LINKS.map((social) => (

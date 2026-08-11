@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { JSDOM } from 'jsdom';
 
 const viewports = [
   { name: 'desktop-qhd', width: 2560, height: 1440 },
@@ -203,8 +204,43 @@ test('opens external links safely and builds WhatsApp URLs correctly', async ({ 
 
   const emailLinks = page.locator('a[href="mailto:dra.mayramartinsneuro@gmail.com"]');
   await expect(emailLinks).toHaveCount(2);
-  await expect(page.getByText('Center Kids e Clínica Colo de Mãe', { exact: true })).toHaveCount(1);
+  await expect(page.getByText('Center Kids e Clínica Colo de Mãe', { exact: true })).toHaveCount(2);
   await expect(page.getByText('Segunda a Sexta de 8h às 18h', { exact: true })).toHaveCount(2);
+});
+
+test('serves complete prerendered SEO metadata and a connected entity graph', async ({ request }) => {
+  const response = await request.get('/');
+  const html = await response.text();
+  const { document } = new JSDOM(html).window;
+
+  expect(document.title).toBe('Dra. Mayra Martins | Neuropediatra');
+  expect(document.querySelector('meta[name="description"]')?.getAttribute('content')).toContain(
+    'neuropediatria infantil',
+  );
+  expect(document.querySelector('link[rel="canonical"]')?.getAttribute('href')).toBe(
+    'https://www.dramayramartins.com.br/',
+  );
+  expect(document.querySelector('meta[property="og:url"]')?.getAttribute('content')).toBe(
+    'https://www.dramayramartins.com.br/',
+  );
+  expect(document.querySelector('meta[name="twitter:image:alt"]')).not.toBeNull();
+  expect(document.querySelectorAll('h1')).toHaveLength(1);
+  expect(document.querySelector('h1')?.textContent).toContain('Dra. Mayra Martins');
+
+  const jsonLd = document.querySelector('script[type="application/ld+json"]')?.textContent;
+  expect(jsonLd).toBeTruthy();
+  const structuredData = JSON.parse(jsonLd!);
+  const graph = structuredData['@graph'] as Array<Record<string, unknown>>;
+  const physician = graph.find((entity) => entity['@id']?.toString().endsWith('#physician'));
+
+  expect(graph).toHaveLength(6);
+  expect(physician?.['@type']).toEqual(['Person', 'Physician']);
+  expect(physician?.sameAs).toEqual([
+    'https://www.instagram.com/dra.mayra_martins/',
+    'https://www.threads.com/@dra.mayra_martins',
+    'https://www.facebook.com/dra.maymartins/',
+  ]);
+  expect(physician).not.toHaveProperty('address');
 });
 
 test('serves the production preview with security headers', async ({ request }) => {

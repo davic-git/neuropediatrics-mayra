@@ -45,7 +45,8 @@ export default function Hero() {
       <Container className="hero-grid">
         <div className="hero-copy">
           <h1 className="hero-title">
-            Cuidado especializado para o desenvolvimento neurológico do <span>seu filho</span>
+            Dra. Mayra Martins: cuidado neuropediátrico para o desenvolvimento do{' '}
+            <span>seu filho</span>
           </h1>
           <p className="hero-text">
             Acolhimento, conhecimento avançado.

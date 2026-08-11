@@ -47,7 +47,7 @@ export default function Contact() {
               <li>
                 <IconBadge icon={MapPin} className="contato-icon" />
                 <div>
-                  <span className="contato-label">Endereço</span>
+                  <span className="contato-label">Locais de atendimento</span>
                   <span className="contato-value" data-placeholder="true">
                     {CONTACT.address.label}
                   </span>

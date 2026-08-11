@@ -35,7 +35,7 @@ export default function About() {
 
         <div ref={contentRef} className={`sobre-content ${contentRevealClass}`}>
           <Badge>Sobre a Dra. Mayra</Badge>
-          <h2>Porque nos escolher?</h2>
+          <h2>Conheça a Dra. Mayra Martins</h2>
 
           <blockquote className="sobre-quote">
             Sou neuropediatra e, acima de tudo, alguém que entende de perto a jornada das famílias
