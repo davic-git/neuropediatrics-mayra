@@ -137,6 +137,15 @@ test('keeps the experience badge above the Mayra and Benício photo on mobile', 
   await expect(page.locator('.sobre-photo img')).toHaveCSS('z-index', '1');
 });
 
+test('shows the confirmed CRM and RQE once in the professional biography', async ({ page }) => {
+  await page.goto('/');
+
+  await expect(page.getByText(/CRM RJ 52100773-4/)).toHaveCount(1);
+  await expect(page.getByText(/RQE 57481/)).toHaveCount(1);
+  await expect(page.locator('#sobre cite')).toContainText('CRM RJ 52100773-4');
+  await expect(page.locator('#sobre cite')).toContainText('RQE 57481');
+});
+
 test('keeps only the decorative color blobs in the conditions section', async ({ page }) => {
   await page.goto('/');
 
@@ -196,6 +205,23 @@ test('opens external links safely and builds WhatsApp URLs correctly', async ({ 
     await expect(links.nth(index)).toHaveAttribute('rel', /noopener/);
   }
 
+  const professionalProfileUrls = [
+    'https://www.instagram.com/dra.mayra_martins/',
+    'https://www.threads.com/@dra.mayra_martins',
+    'https://www.facebook.com/dra.maymartins/',
+    'https://www.doctoralia.com.br/mayra-martins-6/pediatra/volta-redonda',
+  ];
+  for (const url of professionalProfileUrls) {
+    await expect(page.locator(`footer a[href="${url}"]`)).toHaveCount(1);
+  }
+  await expect(page.locator('.footer-socials a[href*="?"]')).toHaveCount(0);
+
+  const doctoraliaLink = page.locator(
+    'footer a[href="https://www.doctoralia.com.br/mayra-martins-6/pediatra/volta-redonda"]',
+  );
+  await expect(doctoraliaLink).toHaveCount(1);
+  await expect(doctoraliaLink).toHaveAttribute('aria-label', 'Doctoralia — abre em nova aba');
+
   const whatsAppLinks = page.locator('a.btn-whatsapp');
   expect(await whatsAppLinks.count()).toBeGreaterThan(0);
   for (let index = 0; index < (await whatsAppLinks.count()); index += 1) {
@@ -204,7 +230,20 @@ test('opens external links safely and builds WhatsApp URLs correctly', async ({ 
 
   const emailLinks = page.locator('a[href="mailto:dra.mayramartinsneuro@gmail.com"]');
   await expect(emailLinks).toHaveCount(2);
-  await expect(page.getByText('Center Kids e Clínica Colo de Mãe', { exact: true })).toHaveCount(2);
+  await expect(page.getByText(/Center Kids/)).toHaveCount(2);
+  await expect(page.getByText(/Colo de Mãe/)).toHaveCount(2);
+  await expect(
+    page.getByText(
+      'Shopping 33/Torre I, Rua 40, 20 - Salas 401 a 407 - Vila Santa Cecília, Volta Redonda - RJ, 27260-200',
+      { exact: true },
+    ),
+  ).toHaveCount(1);
+  await expect(
+    page.getByText(
+      'R. Vinte e Um, 87 - Vila Santa Cecília, Volta Redonda - RJ, 27261-610',
+      { exact: true },
+    ),
+  ).toHaveCount(1);
   await expect(page.getByText('Segunda a Sexta de 8h às 18h', { exact: true })).toHaveCount(2);
 });
 
@@ -213,9 +252,12 @@ test('serves complete prerendered SEO metadata and a connected entity graph', as
   const html = await response.text();
   const { document } = new JSDOM(html).window;
 
-  expect(document.title).toBe('Dra. Mayra Martins | Neuropediatra');
+  expect(document.title).toBe('Dra. Mayra Martins | Neuropediatra em Volta Redonda - RJ');
   expect(document.querySelector('meta[name="description"]')?.getAttribute('content')).toContain(
-    'neuropediatria infantil',
+    'neuropediatria infantil em Volta Redonda - RJ',
+  );
+  expect(document.querySelector('meta[property="og:title"]')?.getAttribute('content')).toBe(
+    'Dra. Mayra Martins | Neuropediatra em Volta Redonda - RJ',
   );
   expect(document.querySelector('link[rel="canonical"]')?.getAttribute('href')).toBe(
     'https://www.dramayramartins.com.br/',
@@ -232,6 +274,10 @@ test('serves complete prerendered SEO metadata and a connected entity graph', as
   const structuredData = JSON.parse(jsonLd!);
   const graph = structuredData['@graph'] as Array<Record<string, unknown>>;
   const physician = graph.find((entity) => entity['@id']?.toString().endsWith('#physician'));
+  const centerKids = graph.find((entity) => entity['@id']?.toString().endsWith('#center-kids'));
+  const coloDeMae = graph.find((entity) =>
+    entity['@id']?.toString().endsWith('#clinica-colo-de-mae'),
+  );
 
   expect(graph).toHaveLength(6);
   expect(physician?.['@type']).toEqual(['Person', 'Physician']);
@@ -239,8 +285,73 @@ test('serves complete prerendered SEO metadata and a connected entity graph', as
     'https://www.instagram.com/dra.mayra_martins/',
     'https://www.threads.com/@dra.mayra_martins',
     'https://www.facebook.com/dra.maymartins/',
+    'https://www.doctoralia.com.br/mayra-martins-6/pediatra/volta-redonda',
+    'https://maps.app.goo.gl/XkDMnif7T6Szp8En8',
+  ]);
+  expect(new Set(physician?.sameAs as string[]).size).toBe(
+    (physician?.sameAs as string[]).length,
+  );
+  expect(physician?.areaServed).toEqual({
+    '@type': 'City',
+    name: 'Volta Redonda',
+    containedInPlace: {
+      '@type': 'State',
+      name: 'Rio de Janeiro',
+      alternateName: 'RJ',
+    },
+  });
+  expect(physician?.telephone).toBe('+55 24 99945-9027');
+  expect(physician?.medicalSpecialty).toEqual([
+    'https://schema.org/Neurologic',
+    'https://schema.org/Pediatric',
+  ]);
+  expect(physician?.hasCredential).toEqual([
+    {
+      '@type': 'EducationalOccupationalCredential',
+      credentialCategory: 'Registro profissional médico',
+      identifier: {
+        '@type': 'PropertyValue',
+        propertyID: 'CRM-RJ',
+        value: '52100773-4',
+      },
+    },
+    {
+      '@type': 'EducationalOccupationalCredential',
+      credentialCategory: 'Registro de Qualificação de Especialista',
+      identifier: {
+        '@type': 'PropertyValue',
+        propertyID: 'RQE',
+        value: '57481',
+      },
+    },
   ]);
   expect(physician).not.toHaveProperty('address');
+  expect(centerKids).toMatchObject({
+    '@type': 'Organization',
+    name: 'Center Kids',
+    address: {
+      '@type': 'PostalAddress',
+      streetAddress: 'Shopping 33/Torre I, Rua 40, 20 - Salas 401 a 407 - Vila Santa Cecília',
+      addressLocality: 'Volta Redonda',
+      addressRegion: 'RJ',
+      postalCode: '27260-200',
+      addressCountry: 'BR',
+    },
+  });
+  expect(coloDeMae).toMatchObject({
+    '@type': 'Organization',
+    name: 'Colo de Mãe',
+    address: {
+      '@type': 'PostalAddress',
+      streetAddress: 'R. Vinte e Um, 87 - Vila Santa Cecília',
+      addressLocality: 'Volta Redonda',
+      addressRegion: 'RJ',
+      postalCode: '27261-610',
+      addressCountry: 'BR',
+    },
+  });
+  expect(centerKids).not.toHaveProperty('telephone');
+  expect(coloDeMae).not.toHaveProperty('telephone');
 });
 
 test('serves the production preview with security headers', async ({ request }) => {

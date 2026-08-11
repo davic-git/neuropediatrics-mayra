@@ -890,6 +890,23 @@
 
 .contato-list a:hover { text-decoration: underline; }
 
+.contato-list li.contato-location-item { align-items: flex-start; }
+.contato-location-item .contato-icon { margin-top: 2px; }
+.contato-locations { display: grid; gap: 12px; }
+.contato-location { font-style: normal; }
+.contato-location strong,
+.contato-location span { display: block; }
+.contato-location strong {
+  color: var(--teal);
+  font-size: 0.98rem;
+  margin-bottom: 2px;
+}
+.contato-location span {
+  color: var(--ink-soft);
+  font-size: 0.88rem;
+  line-height: 1.5;
+}
+
 .contato-value[data-placeholder="true"] {
   color: var(--ink-soft);
   font-weight: 500;

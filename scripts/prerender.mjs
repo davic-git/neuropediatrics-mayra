@@ -26,13 +26,15 @@ function normalizePublicUrl(value) {
 
 const siteUrl = normalizePublicUrl(rawSiteUrl.trim());
 
-const pageTitle = 'Dra. Mayra Martins | Neuropediatra';
+const pageTitle = 'Dra. Mayra Martins | Neuropediatra em Volta Redonda - RJ';
 const pageDescription =
-  'Dra. Mayra Martins oferece acompanhamento em neuropediatria infantil, com avaliação individualizada, ciência, acolhimento e orientação às famílias.';
-const socialProfiles = [
+  'Dra. Mayra Martins oferece acompanhamento em neuropediatria infantil em Volta Redonda - RJ, com avaliação individualizada e acolhimento às famílias.';
+const entityProfiles = [
   'https://www.instagram.com/dra.mayra_martins/',
   'https://www.threads.com/@dra.mayra_martins',
   'https://www.facebook.com/dra.maymartins/',
+  'https://www.doctoralia.com.br/mayra-martins-6/pediatra/volta-redonda',
+  'https://maps.app.goo.gl/XkDMnif7T6Szp8En8',
 ];
 
 function buildStructuredData(pageUrl, socialImageUrl) {
@@ -48,7 +50,7 @@ function buildStructuredData(pageUrl, socialImageUrl) {
         '@type': 'WebSite',
         '@id': websiteId,
         url: pageUrl,
-        name: 'Dra. Mayra Martins | Neuropediatra',
+        name: pageTitle,
         inLanguage: 'pt-BR',
       },
       {
@@ -79,28 +81,74 @@ function buildStructuredData(pageUrl, socialImageUrl) {
         url: pageUrl,
         image: { '@id': imageId },
         description:
-          'Médica neuropediatra que oferece acompanhamento infantil individualizado, com ciência, acolhimento e orientação às famílias.',
+          'Médica neuropediatra que oferece acompanhamento infantil individualizado em Volta Redonda - RJ, com ciência, acolhimento e orientação às famílias.',
         telephone: '+55 24 99945-9027',
         email: 'dra.mayramartinsneuro@gmail.com',
         medicalSpecialty: [
           'https://schema.org/Neurologic',
           'https://schema.org/Pediatric',
         ],
+        hasCredential: [
+          {
+            '@type': 'EducationalOccupationalCredential',
+            credentialCategory: 'Registro profissional médico',
+            identifier: {
+              '@type': 'PropertyValue',
+              propertyID: 'CRM-RJ',
+              value: '52100773-4',
+            },
+          },
+          {
+            '@type': 'EducationalOccupationalCredential',
+            credentialCategory: 'Registro de Qualificação de Especialista',
+            identifier: {
+              '@type': 'PropertyValue',
+              propertyID: 'RQE',
+              value: '57481',
+            },
+          },
+        ],
+        areaServed: {
+          '@type': 'City',
+          name: 'Volta Redonda',
+          containedInPlace: {
+            '@type': 'State',
+            name: 'Rio de Janeiro',
+            alternateName: 'RJ',
+          },
+        },
         affiliation: [
           { '@id': `${pageUrl}#center-kids` },
           { '@id': `${pageUrl}#clinica-colo-de-mae` },
         ],
-        sameAs: socialProfiles,
+        sameAs: entityProfiles,
       },
       {
         '@type': 'Organization',
         '@id': `${pageUrl}#center-kids`,
         name: 'Center Kids',
+        address: {
+          '@type': 'PostalAddress',
+          streetAddress:
+            'Shopping 33/Torre I, Rua 40, 20 - Salas 401 a 407 - Vila Santa Cecília',
+          addressLocality: 'Volta Redonda',
+          addressRegion: 'RJ',
+          postalCode: '27260-200',
+          addressCountry: 'BR',
+        },
       },
       {
         '@type': 'Organization',
         '@id': `${pageUrl}#clinica-colo-de-mae`,
-        name: 'Clínica Colo de Mãe',
+        name: 'Colo de Mãe',
+        address: {
+          '@type': 'PostalAddress',
+          streetAddress: 'R. Vinte e Um, 87 - Vila Santa Cecília',
+          addressLocality: 'Volta Redonda',
+          addressRegion: 'RJ',
+          postalCode: '27261-610',
+          addressCountry: 'BR',
+        },
       },
     ],
   };

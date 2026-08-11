@@ -4,12 +4,19 @@ Este documento registra decisões que dependem de dados reais ou da hospedagem. 
 
 ## Pendências externas
 
-- Confirmar e preencher o endereço real em `src/data/contact.ts`.
 - Fornecer e aprovar clinicamente as respostas em `src/data/faq.ts`.
-- Confirmar cidade e UF principais antes de incluí-las no title, conteúdo, NAP ou dados estruturados.
-- Fornecer CRM/RQE, URL do Google Business/Maps e Doctoralia, caso existam e sejam oficiais.
-- Confirmar os vínculos com Center Kids e Clínica Colo de Mãe e fornecer os respectivos endereços reais.
 - Fornecer uma imagem social definitiva aprovada; o build usa atualmente `public/og-image.jpg`.
+
+## Dados confirmados
+
+- Cidade/UF profissional: Volta Redonda - RJ.
+- Registro profissional: CRM RJ 52100773-4.
+- Qualificação de especialista: RQE 57481.
+- Perfil profissional no Doctoralia: `https://www.doctoralia.com.br/mayra-martins-6/pediatra/volta-redonda`.
+- Perfil profissional no Google Maps/Google Business: `https://maps.app.goo.gl/XkDMnif7T6Szp8En8`.
+- Center Kids: Shopping 33/Torre I, Rua 40, 20 - Salas 401 a 407 - Vila Santa Cecília, Volta Redonda - RJ, 27260-200.
+- Colo de Mãe: R. Vinte e Um, 87 - Vila Santa Cecília, Volta Redonda - RJ, 27261-610.
+- Os endereços acima pertencem aos respectivos locais de atendimento e não são o endereço pessoal da Dra. Mayra Martins.
 
 ## Segurança e headers
 

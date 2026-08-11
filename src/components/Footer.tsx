@@ -3,6 +3,7 @@ import BrandLogo from './ui/BrandLogo';
 import { CONTACT } from '../data/contact';
 import { NAV_LINKS } from '../data/navigation';
 import { ANALYTICS_EVENTS } from '../utils/analytics-events';
+import { Stethoscope } from 'lucide-react';
 import instagramIcon from '../assets/icons/instagram.svg';
 import threadsIcon from '../assets/icons/threads.svg';
 import facebookIcon from '../assets/icons/facebook.svg';
@@ -15,13 +16,18 @@ const SOCIAL_LINKS = [
   },
   {
     name: 'Threads',
-    href: 'https://www.threads.com/@dra.mayra_martins?xmt=AQG0b8HmzG-kmVHlyWMtvBgiX6jOeKLyIHFpb5dj44SnOPw',
+    href: 'https://www.threads.com/@dra.mayra_martins',
     icon: threadsIcon,
   },
   {
     name: 'Facebook',
-    href: 'https://www.facebook.com/dra.maymartins/?http_ref=eyJ0cyl6MTc4NjEzOTI4NDAwMCwicil6liJ9',
+    href: 'https://www.facebook.com/dra.maymartins/',
     icon: facebookIcon,
+  },
+  {
+    name: 'Doctoralia',
+    href: 'https://www.doctoralia.com.br/mayra-martins-6/pediatra/volta-redonda',
+    icon: null,
   },
 ] as const;
 
@@ -70,9 +76,13 @@ export default function Footer() {
               </a>
             </li>
             <li>{CONTACT.hours}</li>
-            <li>{CONTACT.address.label}</li>
+            {CONTACT.locations.map((location) => (
+              <li key={location.id}>
+                {location.name} — {location.city} - {location.region}
+              </li>
+            ))}
           </ul>
-          <ul className="footer-socials" aria-label="Redes sociais">
+          <ul className="footer-socials" aria-label="Perfis profissionais e redes sociais">
             {SOCIAL_LINKS.map((social) => (
               <li key={social.name}>
                 <a
@@ -81,7 +91,11 @@ export default function Footer() {
                   rel="noopener noreferrer"
                   aria-label={`${social.name} — abre em nova aba`}
                 >
-                  <img src={social.icon} alt="" aria-hidden="true" />
+                  {social.icon ? (
+                    <img src={social.icon} alt="" aria-hidden="true" />
+                  ) : (
+                    <Stethoscope size={19} aria-hidden="true" />
+                  )}
                 </a>
               </li>
             ))}

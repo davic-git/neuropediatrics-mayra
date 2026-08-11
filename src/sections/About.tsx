@@ -42,7 +42,7 @@ export default function About() {
             atípicas. Meu filho, Benício, é neurodivergente — e essa vivência me ensinou que cada
             criança tem seu próprio tempo e sua própria forma de ser compreendida. É esse olhar que
             trago para cada consulta: técnico, atualizado e, sobretudo, humano.
-            <cite>— Dra. Mayra Martins</cite>
+            <cite>— Dra. Mayra Martins · CRM RJ 52100773-4 · RQE 57481</cite>
           </blockquote>
 
           <div className="sobre-cards">

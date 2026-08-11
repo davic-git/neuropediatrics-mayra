@@ -44,13 +44,19 @@ export default function Contact() {
                   </a>
                 </div>
               </li>
-              <li>
+              <li className="contato-location-item">
                 <IconBadge icon={MapPin} className="contato-icon" />
                 <div>
                   <span className="contato-label">Locais de atendimento</span>
-                  <span className="contato-value" data-placeholder="true">
-                    {CONTACT.address.label}
-                  </span>
+                  <div className="contato-locations">
+                    {CONTACT.locations.map((location) => (
+                      <address className="contato-location" key={location.id}>
+                        <strong>{location.name}</strong>
+                        {' '}
+                        <span>{location.address}</span>
+                      </address>
+                    ))}
+                  </div>
                 </div>
               </li>
               <li>

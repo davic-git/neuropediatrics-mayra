@@ -2,7 +2,7 @@
 
 ## Resumo executivo
 
-A Home foi otimizada de forma conservadora para reforçar a entidade da Dra. Mayra Martins e sua atuação em neuropediatria. Não houve alteração de CSS, layout, integrações, rotas ou conteúdo clínico. Cidade, endereço, CRM/RQE, Google Business/Maps e Doctoralia não foram adicionados porque não há dados confiáveis no projeto que os confirmem.
+A Home foi otimizada de forma conservadora para reforçar a entidade da Dra. Mayra Martins e sua atuação em neuropediatria. Não houve alteração de layout, integrações, rotas ou conteúdo clínico. A cidade/UF profissional, os dois endereços de atendimento, o CRM, o RQE, o perfil no Doctoralia e o perfil profissional no Google Maps/Google Business foram posteriormente confirmados.
 
 ## Auditoria anterior à implementação
 
@@ -43,12 +43,12 @@ A Home foi otimizada de forma conservadora para reforçar a entidade da Dra. May
 
 ### Metadados finais
 
-- Title (34 caracteres): `Dra. Mayra Martins | Neuropediatra`
-- Meta description (147 caracteres): `Dra. Mayra Martins oferece acompanhamento em neuropediatria infantil, com avaliação individualizada, ciência, acolhimento e orientação às famílias.`
+- Title (56 caracteres): `Dra. Mayra Martins | Neuropediatra em Volta Redonda - RJ`
+- Meta description (148 caracteres): `Dra. Mayra Martins oferece acompanhamento em neuropediatria infantil em Volta Redonda - RJ, com avaliação individualizada e acolhimento às famílias.`
 - Canonical: `https://www.dramayramartins.com.br/`
 - OG e Twitter usam o mesmo title e description; URL, imagem e textos alternativos estão presentes no HTML final.
 
-“Volta Redonda - RJ” não foi usado porque a cidade/UF não está confirmada em nenhum dado confiável do repositório.
+“Volta Redonda - RJ” foi incluído após confirmação explícita da cidade/UF profissional.
 
 ### Hierarquia de headings
 
@@ -71,24 +71,26 @@ O build cria um único `@graph`, com referências por `@id` estável:
 - `Person` + `Physician`: `https://www.dramayramartins.com.br/#physician`
 - `ImageObject`: `https://www.dramayramartins.com.br/#primaryimage`
 - `Organization`: Center Kids
-- `Organization`: Clínica Colo de Mãe
+- `Organization`: Colo de Mãe
 
-A `WebPage` aponta para a médica com `mainEntity`; a médica aponta para a imagem, para as duas organizações por `affiliation` e para os perfis oficiais. `medicalSpecialty` usa os valores Schema.org `Neurologic` e `Pediatric`. Não foram adicionados `address`, CRM/RQE ou tipos de negócio local incompletos.
+A `WebPage` aponta para a médica com `mainEntity`; a médica aponta para a imagem, para as duas organizações por `affiliation` e para os perfis oficiais. `medicalSpecialty` usa os valores Schema.org `Neurologic` e `Pediatric`. CRM e RQE são representados como credenciais distintas em `hasCredential`, ambas do tipo `EducationalOccupationalCredential`: o CRM usa o identificador `CRM-RJ` e o RQE usa o identificador `RQE`. Nenhuma especialidade adicional foi inferida do número do RQE. `areaServed` identifica Volta Redonda dentro do estado do Rio de Janeiro. Cada organização de atendimento possui seu próprio `address` do tipo `PostalAddress`; nenhum endereço foi aplicado à entidade `Person` + `Physician`.
 
 ### sameAs utilizados
 
 - `https://www.instagram.com/dra.mayra_martins/`
 - `https://www.threads.com/@dra.mayra_martins`
 - `https://www.facebook.com/dra.maymartins/`
+- `https://www.doctoralia.com.br/mayra-martins-6/pediatra/volta-redonda`
+- `https://maps.app.goo.gl/XkDMnif7T6Szp8En8`
 
-Parâmetros de rastreamento foram removidos das URLs de entidade. Doctoralia e Google Business/Maps não foram usados por falta de URL confirmada.
+Parâmetros de rastreamento foram removidos das URLs de entidade. O perfil oficial no Doctoralia foi incluído após confirmação explícita e também aparece na área de perfis profissionais do footer. A URL pública do Google Maps/Google Business foi adicionada somente ao `sameAs` da médica porque representa diretamente a profissional; nenhum dado técnico do redirecionamento foi incorporado.
 
 ### SEO local
 
 - O falso rótulo “Endereço” foi substituído por “Locais de atendimento”.
-- Center Kids e Clínica Colo de Mãe passaram a aparecer de forma consistente no contato, footer e grafo de entidade.
+- Center Kids e Colo de Mãe aparecem separadamente no contato, footer e grafo de entidade, cada uma associada somente ao próprio endereço confirmado.
 - Telefone e e-mail permanecem consistentes no conteúdo e no JSON-LD.
-- Nenhuma localização foi inferida pelo DDD do telefone.
+- Volta Redonda - RJ foi incluída a partir de confirmação explícita, não inferida pelo DDD do telefone.
 
 ### Imagens
 
@@ -127,7 +129,7 @@ Parâmetros de rastreamento foram removidos das URLs de entidade. Doctoralia e G
 - Canonical final: `https://www.dramayramartins.com.br/`.
 - Robots final referencia `https://www.dramayramartins.com.br/sitemap.xml`.
 - Sitemap final contém somente `https://www.dramayramartins.com.br/`.
-- O teste E2E faz parse do HTML bruto, valida metadados, canonical, H1, entidades, `sameAs` e ausência deliberada de endereço.
+- O teste E2E faz parse do HTML bruto, valida metadados, canonical, H1, entidades, `sameAs`, ausência de endereço no `Physician` e os dois `PostalAddress` associados às organizações corretas.
 
 O primeiro Vitest dentro do sandbox falhou com `spawn EPERM` ao iniciar o Vite no Windows. A mesma suíte executada fora do sandbox passou integralmente; não foi falha de código.
 
@@ -140,11 +142,6 @@ O primeiro Vitest dentro do sandbox falhou com `spawn EPERM` ao iniciar o Vite n
 
 ## Dados ainda necessários
 
-- Cidade e UF principais.
-- Endereço completo e validado de cada local de atendimento.
-- Confirmação formal do vínculo atual com Center Kids e Clínica Colo de Mãe.
-- CRM e RQE, se a médica aprovar sua publicação.
-- URLs oficiais de Google Business/Maps e Doctoralia.
 - Confirmação de que telefone, e-mail e horário publicados continuam atuais.
 - Respostas médicas aprovadas para o FAQ.
 - Conteúdo clínico revisado para qualquer página temática futura.
