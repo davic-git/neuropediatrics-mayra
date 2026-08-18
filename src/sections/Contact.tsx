@@ -3,7 +3,8 @@ import Container from '../components/ui/Container';
 import IconBadge from '../components/ui/IconBadge';
 import PhotoSlot from '../components/ui/PhotoSlot';
 import coloDeMaePhoto from '../assets/images/contact/colo-de-mae.webp';
-import consultorioPhoto from '../assets/images/contact/consultorio-1.jpg';
+import consultorioPhoto320 from '../assets/images/contact/consultorio-1-320.avif';
+import consultorioPhoto from '../assets/images/contact/consultorio-1.avif';
 import { APPOINTMENT_WHATSAPP_TEXT, CONTACT } from '../data/contact';
 import { useReveal } from '../hooks/useReveal';
 import { ANALYTICS_EVENTS } from '../utils/analytics-events';
@@ -35,8 +36,10 @@ export default function Contact() {
           <PhotoSlot
             className="contato-photo"
             src={consultorioPhoto}
+            srcSet={`${consultorioPhoto320} 320w, ${consultorioPhoto} 510w`}
+            sizes="(max-width: 1100px) calc(100vw - 44px), 360px"
             alt="Consultório da Clínica Colo de Mãe"
-            label="consultorio-1.jpg"
+            label="consultorio-1.avif"
             width={510}
             height={510}
           />

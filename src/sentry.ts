@@ -1,8 +1,34 @@
 import * as Sentry from '@sentry/react';
+import type { ErrorEvent } from '@sentry/react';
 
 const dsn = import.meta.env.VITE_SENTRY_DSN?.trim();
 
 export const isSentryEnabled = Boolean(import.meta.env.PROD && typeof window !== 'undefined' && dsn);
+
+export function filterAndScrubSentryEvent(event: ErrorEvent): ErrorEvent | null {
+  const isAndroidInAppBrowserNoise = event.exception?.values?.some(
+    (exception) =>
+      exception.value === 'Error invoking postMessage: Java object is gone' &&
+      exception.stacktrace?.frames?.some((frame) =>
+        frame.filename?.startsWith('iabjs://navigation_performance_logger_android'),
+      ),
+  );
+
+  if (isAndroidInAppBrowserNoise) {
+    return null;
+  }
+
+  delete event.user;
+
+  if (event.request) {
+    delete event.request.cookies;
+    delete event.request.data;
+    delete event.request.headers;
+    delete event.request.query_string;
+  }
+
+  return event;
+}
 
 if (isSentryEnabled) {
   Sentry.init({
@@ -32,18 +58,7 @@ if (isSentryEnabled) {
       stackFrameVariables: false,
       frameContextLines: 0,
     },
-    beforeSend(event) {
-      delete event.user;
-
-      if (event.request) {
-        delete event.request.cookies;
-        delete event.request.data;
-        delete event.request.headers;
-        delete event.request.query_string;
-      }
-
-      return event;
-    },
+    beforeSend: filterAndScrubSentryEvent,
   });
 }
 

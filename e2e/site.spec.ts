@@ -72,12 +72,23 @@ test('shows both clinic photos around the contact card', async ({ page }) => {
   const contactGrid = page.locator('#contato .contato-grid');
   const photos = contactGrid.locator('.contato-photo');
   const card = contactGrid.locator('.contato-card');
+  const consultorioImage = photos.nth(0).locator('img');
 
   await expect(photos).toHaveCount(2);
-  await expect(photos.nth(0).locator('img')).toHaveAttribute(
+  await expect(consultorioImage).toHaveAttribute(
     'alt',
     'Consultório da Clínica Colo de Mãe',
   );
+  await expect(consultorioImage).toHaveAttribute('src', /consultorio-1.*\.avif$/);
+  await expect(consultorioImage).toHaveAttribute('srcset', /320w.*510w/);
+  await expect(consultorioImage).toHaveAttribute('sizes', /360px$/);
+  await expect(consultorioImage).toHaveAttribute('loading', 'lazy');
+  await expect(consultorioImage).toHaveAttribute('width', '510');
+  await expect(consultorioImage).toHaveAttribute('height', '510');
+  await consultorioImage.scrollIntoViewIfNeeded();
+  await expect
+    .poll(() => consultorioImage.evaluate((image: HTMLImageElement) => image.naturalWidth))
+    .toBeGreaterThan(0);
   await expect(photos.nth(1).locator('img')).toHaveAttribute(
     'alt',
     'Recepção da Clínica Colo de Mãe',
@@ -104,8 +115,17 @@ test('shows the DNA image between the family cards on desktop', async ({ page })
 
   await expect(cards).toHaveCount(2);
   await expect(figure).toHaveCount(1);
-  await expect(image).toHaveAttribute('src', /imagem-dna/);
+  await expect(image).toHaveAttribute('src', /imagem-dna.*\.avif$/);
+  await expect(image).toHaveAttribute('srcset', /400w.*800w.*1086w/);
+  await expect(image).toHaveAttribute('sizes', /360px$/);
+  await expect(image).toHaveAttribute('loading', 'lazy');
+  await expect(image).toHaveAttribute('width', '1086');
+  await expect(image).toHaveAttribute('height', '1448');
   await expect(image).toHaveAttribute('alt', 'Ilustração de uma dupla hélice de DNA');
+  await image.scrollIntoViewIfNeeded();
+  await expect
+    .poll(() => image.evaluate((element: HTMLImageElement) => element.naturalWidth))
+    .toBeGreaterThan(0);
 
   const [firstCardBox, figureBox, secondCardBox] = await Promise.all([
     cards.nth(0).boundingBox(),

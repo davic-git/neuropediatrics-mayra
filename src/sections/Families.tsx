@@ -2,7 +2,9 @@ import CTA from '../components/CTA';
 import Container from '../components/ui/Container';
 import IconBadge from '../components/ui/IconBadge';
 import PhotoSlot from '../components/ui/PhotoSlot';
-import dnaImage from '../assets/images/families/imagem-dna.png';
+import dnaImage400 from '../assets/images/families/imagem-dna-400.avif';
+import dnaImage800 from '../assets/images/families/imagem-dna-800.avif';
+import dnaImage from '../assets/images/families/imagem-dna.avif';
 import { useReveal } from '../hooks/useReveal';
 import { Puzzle } from "lucide-react";
 
@@ -32,8 +34,10 @@ export default function Families() {
           <PhotoSlot
             className="familia-figure"
             src={dnaImage}
+            srcSet={`${dnaImage400} 400w, ${dnaImage800} 800w, ${dnaImage} 1086w`}
+            sizes="(max-width: 768px) calc(100vw - 44px), (max-width: 1100px) 200px, 360px"
             alt="Ilustração de uma dupla hélice de DNA"
-            label="imagem-dna.png"
+            label="imagem-dna.avif"
             width={1086}
             height={1448}
           />
