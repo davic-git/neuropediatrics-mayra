@@ -11,6 +11,9 @@ const securityHeaders = {
 
 // https://vite.dev/config/
 export default defineConfig({
+  define: {
+    __SENTRY_DEBUG__: false,
+  },
   plugins: [react()],
   preview: {
     headers: securityHeaders,

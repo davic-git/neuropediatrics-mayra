@@ -2,6 +2,8 @@ import CTA from '../components/CTA';
 import Container from '../components/ui/Container';
 import IconBadge from '../components/ui/IconBadge';
 import PhotoSlot from '../components/ui/PhotoSlot';
+import coloDeMaePhoto400 from '../assets/images/contact/colo-de-mae-400.avif';
+import coloDeMaePhoto600 from '../assets/images/contact/colo-de-mae-600.avif';
 import coloDeMaePhoto from '../assets/images/contact/colo-de-mae.webp';
 import consultorioPhoto320 from '../assets/images/contact/consultorio-1-320.avif';
 import consultorioPhoto from '../assets/images/contact/consultorio-1.avif';
@@ -99,6 +101,8 @@ export default function Contact() {
           <PhotoSlot
             className="contato-photo"
             src={coloDeMaePhoto}
+            srcSet={`${coloDeMaePhoto400} 400w, ${coloDeMaePhoto600} 600w, ${coloDeMaePhoto} 680w`}
+            sizes="(max-width: 1100px) calc(100vw - 44px), 575px"
             alt="Recepção da Clínica Colo de Mãe"
             label="colo-de-mae.webp"
             width={680}
