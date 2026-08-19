@@ -1,4 +1,5 @@
 import { isAnalyticsEventName, type AnalyticsEventName } from './analytics-events';
+import { scheduleIdleTask, type IdleTaskScheduler } from './idle-task';
 
 type GtagArguments =
   | ['js', Date]
@@ -25,11 +26,13 @@ declare global {
 interface AnalyticsOptions {
   measurementId?: string;
   isProduction?: boolean;
+  scheduleScript?: IdleTaskScheduler;
 }
 
 const SCRIPT_ID = 'ga4-gtag';
 const MEASUREMENT_ID_PATTERN = /^G-[A-Z0-9]+$/;
 const eventTrackingDocuments = new WeakSet<Document>();
+const scheduledScriptDocuments = new WeakSet<Document>();
 
 export function trackAnalyticsEvent(eventName: AnalyticsEventName): void {
   window.gtag?.('event', eventName);
@@ -53,6 +56,7 @@ function enableAnalyticsEvents(): void {
 export function initializeAnalytics(options: AnalyticsOptions = {}): boolean {
   const measurementId = (options.measurementId ?? import.meta.env.VITE_GA_MEASUREMENT_ID)?.trim();
   const isProduction = options.isProduction ?? import.meta.env.PROD;
+  const scheduleScript = options.scheduleScript ?? scheduleIdleTask;
 
   if (
     !isProduction ||
@@ -74,12 +78,18 @@ export function initializeAnalytics(options: AnalyticsOptions = {}): boolean {
 
   window.gtag = gtag;
 
-  if (!document.getElementById(SCRIPT_ID)) {
-    const script = document.createElement('script');
-    script.id = SCRIPT_ID;
-    script.async = true;
-    script.src = `https://www.googletagmanager.com/gtag/js?id=${measurementId}`;
-    document.head.append(script);
+  if (!document.getElementById(SCRIPT_ID) && !scheduledScriptDocuments.has(document)) {
+    scheduledScriptDocuments.add(document);
+    scheduleScript(() => {
+      scheduledScriptDocuments.delete(document);
+      if (document.getElementById(SCRIPT_ID)) return;
+
+      const script = document.createElement('script');
+      script.id = SCRIPT_ID;
+      script.async = true;
+      script.src = `https://www.googletagmanager.com/gtag/js?id=${measurementId}`;
+      document.head.append(script);
+    });
   }
 
   const alreadyConfigured = window.dataLayer.some(
