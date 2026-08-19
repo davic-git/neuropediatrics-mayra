@@ -500,6 +500,69 @@ test('serves the production preview with security headers', async ({ request }) 
   expect(response.headers()['referrer-policy']).toBe('strict-origin-when-cross-origin');
 });
 
+test('runs without first-party runtime or CSP errors in a clean browser', async ({
+  page,
+  baseURL,
+}) => {
+  const firstPartyErrors: string[] = [];
+  const applicationOrigin = new URL(baseURL ?? 'http://127.0.0.1:4173').origin;
+  const isApplicationRequest = (value: string) => {
+    const url = new URL(value);
+    return url.origin === applicationOrigin && !url.pathname.startsWith('/_vercel/');
+  };
+
+  await page.addInitScript(() => {
+    const auditWindow = window as typeof window & {
+      __cspViolations: Array<{ blockedURI: string; directive: string }>;
+    };
+    auditWindow.__cspViolations = [];
+    document.addEventListener('securitypolicyviolation', (event) => {
+      auditWindow.__cspViolations.push({
+        blockedURI: event.blockedURI,
+        directive: event.effectiveDirective,
+      });
+    });
+  });
+
+  page.on('pageerror', (error) => {
+    firstPartyErrors.push(`pageerror: ${error.message}`);
+  });
+  page.on('console', (message) => {
+    if (message.type() !== 'error') return;
+    const sourceUrl = message.location().url;
+    if (!sourceUrl || isApplicationRequest(sourceUrl)) {
+      firstPartyErrors.push(`console: ${message.text()}`);
+    }
+  });
+  page.on('requestfailed', (request) => {
+    if (isApplicationRequest(request.url())) {
+      firstPartyErrors.push(`requestfailed: ${request.url()}`);
+    }
+  });
+  page.on('response', (response) => {
+    if (response.status() >= 400 && isApplicationRequest(response.url())) {
+      firstPartyErrors.push(`response: ${response.status()} ${response.url()}`);
+    }
+  });
+
+  const response = await page.goto('/');
+  expect(response?.ok()).toBe(true);
+  await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
+  await page.locator('.faq-question').first().click();
+  await page.waitForTimeout(1_000);
+
+  const cspViolations = await page.evaluate(
+    () =>
+      (
+        window as typeof window & {
+          __cspViolations: Array<{ blockedURI: string; directive: string }>;
+        }
+      ).__cspViolations,
+  );
+  expect(cspViolations).toEqual([]);
+  expect(firstPartyErrors).toEqual([]);
+});
+
 test('serves the favicon and contains no obsolete image or external font references', async ({
   page,
   request,
